@@ -13,7 +13,7 @@ GITLAB (SOURCE) REPO: **ca-llvm**
 GITHUB (TARGET) REPO: **alan-forbes-cp/import_target**
 
 The **import** script uses the **gh** (Github CLI) command and its **actions-importer** extension. Output of the following 4 actions-importer functions used are shown in sub-directories under the **ComputeAorta** directory:
-1. audit
+1. audit (aka plan)
 2. forecast
 3. dry-run
 4. migrate
@@ -24,7 +24,7 @@ These sub-directories are created by a single **import** run. Taken in the above
 
 The **_command.out** files in the **ComputeAorta** directory contain the actual console output for each actions-importer operation and are included for completeness. You may need to "cat" these files at a console to get readable output.
 
-Browsing each of the sub-directories under **ComputeAorta** should provide a flavour of the typical output for each of the actions-importer functions. In particular, note the following files from the audit, forecast and dry-run phases:
+Browsing each of the sub-directories under **ComputeAorta** should provide a flavour of the typical output for each of the actions-importer functions. In particular, note the following files from the audit (or plan), forecast and dry-run phases:
 
 [ComputeAorta audit summary](https://github.com/alan-forbes-cp/import/blob/master/ComputeAorta/audit/audit_summary.md)
 
@@ -33,6 +33,8 @@ Browsing each of the sub-directories under **ComputeAorta** should provide a fla
 [Dry-run generated ca-llvm Github action workflow .yml file](https://github.com/alan-forbes-cp/import/blob/master/ComputeAorta/dry-run/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml)
 
 The final migrate phase results in a PR being created in the target Github repo. For the **import** run used to populate the **ComputeAorta** sub-directories, the corresponding [PR can be found here](https://github.com/alan-forbes-cp/import_target/pull/1). Note that the file proposed for merging is the same .yml file as in the above-mentioned dry-run phase.
+
+There is a useful workflow overview here: https://www.youtube.com/watch?v=3t5ywu0_qk4
 
 ## "import" script set-up and configuration
 
