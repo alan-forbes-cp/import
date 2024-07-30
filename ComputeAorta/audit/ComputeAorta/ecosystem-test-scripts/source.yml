@@ -1,0 +1,297 @@
+---
+variables:
+  PROJECT:
+    value: 'All'
+    description: Specify a project to run, lower case project name or "All".
+  LLVM_VERSION:
+    value: 'release_160'
+    description: LLVM branch to pull CA and LLVM artefact for.
+  CONFIG:
+    value: 'All'
+    description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+  GITHUB_USER:
+    value: 'codeplaysoftware'
+    description: oneAPI Construction Kit GitHub user from which to clone OCK.
+  CA_BRANCH:
+    value: 'main'
+    description: oneAPI Construction Kit branch to build and test with.
+  BUILD_CA_ARTEFACT:
+    value: 'TRUE'
+    description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+  COMPUTECPP_VERSION:
+    value: '2.10.0'
+    description: ComputeCpp version to test with SYCL projects.
+  COMPUTECPP_CUSTOM_RELEASE:
+    value: ''
+    description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+  MUX_TARGET:
+    value: 'host'
+    description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+
+stages:
+  - docker
+  - build
+  - failing
+  - passing
+  - notify
+
+docker:
+  tags: [linux-docker-images]
+  stage: docker
+  before_script:
+    - docker info
+  script:
+    - docker login
+        -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build
+        --file=./Dockerfile
+        --tag=computeaorta/ecosystem-test-scripts/ubuntu:20.04
+        --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}" .
+    - docker tag computeaorta/ecosystem-test-scripts/ubuntu:20.04
+        $CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04
+    - docker push $CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04
+  only:
+    refs:
+      - merge_requests
+    changes:
+      - Dockerfile
+
+.clone_ock: &clone_ock
+   - echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+   - git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+   - git -C oneapi-construction-kit log -1
+
+.clone_scripts: &clone_scripts
+   - echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+   - git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+   - git -C ci-github log -1
+
+build-artefact:
+  tags: [linux]
+  stage: build
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04
+  script:
+    - *clone_ock
+    - *clone_scripts
+    - python -u ci-github/scripts/build.py
+             -G Ninja
+             --build_type ReleaseAssert
+             --source_dir oneapi-construction-kit
+             --binary_dir build
+             --artefact_name $LLVM_VERSION
+             --define CA_CL_ENABLE_ICD_LOADER=ON
+             --define CA_ENABLE_HOST_IMAGE_SUPPORT=ON
+             --define OCL_EXTENSION_cl_intel_unified_shared_memory=ON
+    - python -u ci-github/scripts/storage.py push artefact.ecosystem_ocl --path ${PWD}/build/install
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$MUX_TARGET != "host"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE != "push" && $BUILD_CA_ARTEFACT != "FALSE"'
+
+.project:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04
+  before_script:
+    - *clone_ock
+    - *clone_scripts
+    - python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+
+.riscv-project:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04
+  before_script:
+    - *clone_ock
+    - *clone_scripts
+    - python -u ci-github/scripts/build.py
+      -G Ninja
+      --build_type ReleaseAssert
+      --source_dir oneapi-construction-kit
+      --binary_dir buildCARISCV
+      --target install
+      --artefact_name $LLVM_VERSION
+      --define CA_ENABLE_HOST_IMAGE_SUPPORT=OFF
+      --define CA_ENABLE_API=cl
+      --define CA_CL_ENABLE_ICD_LOADER=ON
+      --define CA_MUX_TARGETS_TO_ENABLE="riscv"
+      --define CA_RISCV_ENABLED=ON
+    - export OCL_ICD_FILENAMES=${PWD}/buildCARISCV/lib/libCL.so
+    - export OCL_ICD_LOADER=${PWD}/buildCARISCV/lib/libOpenCL.so
+
+.riscv-pipeline-project:
+  extends: .riscv-project
+  rules:
+    - if: '($CI_PIPELINE_SOURCE != "web" && $CI_PIPELINE_SOURCE != "schedule")'
+      when: never
+    - if: '$PROJECT == "All" && $MUX_TARGET == "riscv"'
+
+.project-pipeline-matrix:
+  extends: .project
+  rules:
+    - if: '($CI_PIPELINE_SOURCE != "web" && $CI_PIPELINE_SOURCE != "schedule")'
+      when: never
+    - if: '$PROJECT != "All"'
+      when: never
+    - if: '$MUX_TARGET != "host"'
+      when: never
+    - if: '$MATRIX_CONFIG == "Vanilla"'
+    - if: '$MATRIX_CONFIG == "VECZ"'
+      variables:
+        CA_EXTRA_COMPILE_OPTS: "-cl-wfv=auto"
+    - if: '$MATRIX_CONFIG == "BOSCC"'
+      variables:
+        CA_EXTRA_COMPILE_OPTS: "-cl-wfv=auto"
+        CODEPLAY_VECZ_CHOICES: "LinearizeBOSCC"
+  parallel:
+    matrix:
+      - MATRIX_CONFIG: [Vanilla, VECZ, BOSCC]
+
+.notify:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04
+  stage: notify
+
+notify-pass:
+  extends: .notify
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - if: '$MUX_TARGET != "host"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: on_success
+  script:
+    - 'curl -X POST REDACTED1/messages
+        -u "computeaorta-gitlab-bot@chat.codeplay.com:$ZULIP_TOKEN"
+        --data-urlencode "type=stream" --data-urlencode "to=Orion"
+        --data-urlencode "subject=GitLab CI"
+        --data-urlencode "content=:green: The [${MUX_TARGET} ecosystem project](${CI_PIPELINE_URL}) pipeline started at ${CI_JOB_STARTED_AT} passed!"'
+
+notify-fail:
+  extends: .notify
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: on_failure
+  script:
+    - 'curl -X POST REDACTED1/messages
+        -u "computeaorta-gitlab-bot@chat.codeplay.com:$ZULIP_TOKEN"
+        --data-urlencode "type=stream" --data-urlencode "to=Orion"
+        --data-urlencode "subject=GitLab CI"
+        --data-urlencode "content=:red: The [${MUX_TARGET} ecosystem project](${CI_PIPELINE_URL}) pipeline started at ${CI_JOB_STARTED_AT} failed."'
+
+.passing:
+  stage: passing
+
+.failing:
+  stage: failing
+  allow_failure: true
+
+# Used by projects that need a ComputeCpp install with !reference.
+.computecpp-artefact:
+  script:
+    - if [ -z "$COMPUTECPP_CUSTOM_RELEASE" ]; then
+        ComputeCpp=ComputeCpp-CE-${COMPUTECPP_VERSION}-x86_64-linux-gnu &&
+        wget --no-verbose ${COMPUTECPP_DISTRIBUTION}/ce/${COMPUTECPP_VERSION}/${ComputeCpp}.tar.gz;
+      else
+        wget --no-verbose $COMPUTECPP_CUSTOM_RELEASE &&
+        ComputeCpp=`echo $COMPUTECPP_CUSTOM_RELEASE |
+          sed -E "s/.*\\/([^\/]+)\.tar.gz/\1/"`;
+      fi
+    - tar -xf ${ComputeCpp}.tar.gz && rm -rf ${ComputeCpp}.tar.gz
+    - export COMPUTECPP=$PWD/${ComputeCpp}
+
+# Used by projects that need an llvm install with !reference.
+.llvm-artefact:
+  script:
+    - python -u ci-github/scripts/storage.py pull artefact.llvm Ubuntu20
+                x86_64 ${LLVM_VERSION} ReleaseAssert --verbose --clean
+                --path ${PWD}/llvm
+    - export LLVM=${PWD}/llvm
+
+# Used by projects that need the tensorflow wheel artefact with !reference.
+.tensorflow-artefact:
+  script:
+    - python -u ci-github/scripts/storage.py pull artefact.tensorflow
+                Ubuntu18 x86_64 --verbose --clean --path ${PWD}/tf_wheel
+    - export TF_WHEEL=${PWD}/tf_wheel/tensorflow-1.9.0-cp36-cp36m-linux_x86_64.whl
+
+# For testing a single arbitrary project/config combo.
+single-project:
+  extends: .project
+  stage: passing
+  rules:
+    - if: '$PROJECT == "All"'
+      when: never
+    - if: '$CONFIG == "All"'
+      when: never
+    - if: '$MUX_TARGET != "host"'
+      when: never
+    - if: '$CONFIG == "Vanilla"'
+    - if: '$CONFIG == "VECZ"'
+      variables:
+        CA_EXTRA_COMPILE_OPTS: "-cl-wfv=auto"
+    - if: '$CONFIG == "BOSCC"'
+      variables:
+        CA_EXTRA_COMPILE_OPTS: "-cl-wfv=auto"
+        CODEPLAY_VECZ_CHOICES: "LinearizeBOSCC"
+  script:
+    # The project can be anything so pull all the artefacts.
+    - !reference [.computecpp-artefact, script]
+    - !reference [.llvm-artefact, script]
+    - !reference [.tensorflow-artefact, script]
+    - ./scripts/test-$PROJECT.sh
+
+# For testing a single arbitrary project will all configs.
+single-project-matrix:
+  extends: .project
+  stage: passing
+  rules:
+    - if: '$PROJECT == "All"'
+      when: never
+    - if: '$CONFIG != "All"'
+      when: never
+    - if: '$MUX_TARGET != "host"'
+      when: never
+    - if: '$MATRIX_CONFIG == "Vanilla"'
+      variables:
+        CA_EXTRA_COMPILE_OPTS: "-cl-wfv=never"
+    - if: '$MATRIX_CONFIG == "VECZ"'
+      variables:
+        CA_EXTRA_COMPILE_OPTS: "-cl-wfv=auto"
+    - if: '$MATRIX_CONFIG == "BOSCC"'
+      variables:
+        CA_EXTRA_COMPILE_OPTS: "-cl-wfv=auto"
+        CODEPLAY_VECZ_CHOICES: "LinearizeBOSCC"
+  script:
+    # The project can be anything so pull all the artefacts.
+    - !reference [.computecpp-artefact, script]
+    - !reference [.llvm-artefact, script]
+    - !reference [.tensorflow-artefact, script]
+    - ./scripts/test-$PROJECT.sh
+  parallel:
+    matrix:
+      - MATRIX_CONFIG: [Vanilla, VECZ, BOSCC]
+
+single-riscv-project:
+  extends: .riscv-project
+  stage: passing
+  rules:
+    - if: '$PROJECT == "All"'
+      when: never
+    - if: '$MUX_TARGET == "riscv"'
+  script:
+    # The project can be anything so pull all the artefacts.
+    - !reference [.computecpp-artefact, script]
+    - !reference [.llvm-artefact, script]
+    - !reference [.tensorflow-artefact, script]
+    - ./scripts/test-$PROJECT.sh
+
+include:
+  local: .gitlab/projects.yml

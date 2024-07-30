@@ -1,0 +1,28 @@
+---
+.build:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04
+  interruptible: true
+  script:
+    - pip install virtualenv
+    - virtualenv -p $(command -v python3) .local
+    - source .local/bin/activate
+    - pip install --no-cache-dir -r requirements.txt
+    - sphinx-build --color -W --keep-going -b html source public
+
+handbook:
+  extends: .build
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  artifacts:
+    expose_as: 'HTML'
+    paths: ['public/']
+
+pages:
+  extends: .build
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  artifacts:
+    paths: ['public/']

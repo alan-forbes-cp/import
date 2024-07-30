@@ -1,0 +1,19 @@
+---
+default:
+  interruptible: true
+  before_script:
+    - git submodule update --init --recursive
+
+stages:
+  - test
+
+test:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - git log -1
+    - python -u scripts/build.py -GNinja --pull --clean
+        -DPERFCL_ITERATIONS=1 --target bench

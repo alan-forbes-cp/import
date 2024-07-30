@@ -1,0 +1,114 @@
+name: ComputeAorta/CA-OpenCL-CTS
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+env:
+  STORAGE_USER: "${{ secrets.STORAGE_USER }}"
+  STORAGE_PASS: "${{ secrets.STORAGE_PASS }}"
+  ZULIP_TOKEN: "${{ secrets.ZULIP_TOKEN }}"
+  ComputeAortaCL_TOKEN: "${{ secrets.ComputeAortaCL_TOKEN }}"
+  ComputeAortaCLVK_TOKEN: "${{ secrets.ComputeAortaCLVK_TOKEN }}"
+  SCCACHE_REDIS: redisREDACTED01.office.codeplay.com
+  OLD_CA_GITLAB_API_TOKEN: "${{ secrets.OLD_CA_GITLAB_API_TOKEN }}"
+  OLD_CA_GIT_WRITE_TOKEN: "${{ secrets.OLD_CA_GIT_WRITE_TOKEN }}"
+  CLICOLOR_FORCE: '1'
+  GTEST_COLOR: 'yes'
+  CA_GIT_WRITE_TOKEN: "${{ secrets.CA_GIT_WRITE_TOKEN }}"
+  CA_GITLAB_API_TOKEN: "${{ secrets.CA_GITLAB_API_TOKEN }}"
+  LLVM_GIT_WRITE_TOKEN: zrHPYsf6BVupQeYySmnH
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == "merge_request_event"
+    timeout-minutes: 1440
+    strategy:
+      matrix:
+        ARCH:
+        - x86
+        - x86_64
+        - arm
+        - aarch64
+        LLVM_VERSION:
+        - '14'
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: git submodule update --init --recursive
+    - run: pip install cmake
+    - run: python -u scripts/build.py -Bbuild -GNinja --verbose --build_type Release --arch ${{ matrix.ARCH }} --llvm-version ${{ matrix.LLVM_VERSION }} --target install
+  build-windows:
+    runs-on: windows-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/windows:10"
+    if: ${{ github.event_name }} == "merge_request_event"
+    timeout-minutes: 1440
+    strategy:
+      matrix:
+        ARCH:
+        - x86_64
+        LLVM_VERSION:
+        - '14'
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: git submodule update --init --recursive
+    - run: cmake --version
+    - run: python -u scripts/build.py -Bbuild -GNinja --verbose --build_type Release --arch ${{ matrix.ARCH }} --llvm-version ${{ matrix.LLVM_VERSION }} --target install
+  deploy-ubuntu:
+    needs:
+    - build-ubuntu
+    - build-windows
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.ref }} == $CI_DEFAULT_BRANCH
+    timeout-minutes: 1440
+    strategy:
+      matrix:
+        ARCH:
+        - x86
+        - x86_64
+        - arm
+        - aarch64
+        LLVM_VERSION:
+        - '14'
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: git submodule update --init --recursive
+    - run: pip install cmake
+    - run: python -u scripts/build.py -Bbuild -GNinja --verbose --build_type Release --arch ${{ matrix.ARCH }} --llvm-version ${{ matrix.LLVM_VERSION }} --target install --push
+  deploy-windows:
+    needs:
+    - build-ubuntu
+    - build-windows
+    runs-on: windows-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/windows:10"
+    if: ${{ github.ref }} == $CI_DEFAULT_BRANCH
+    timeout-minutes: 1440
+    strategy:
+      matrix:
+        ARCH:
+        - x86_64
+        LLVM_VERSION:
+        - '14'
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: git submodule update --init --recursive
+    - run: cmake --version
+    - run: python -u scripts/build.py -Bbuild -GNinja --verbose --build_type Release --arch ${{ matrix.ARCH }} --llvm-version ${{ matrix.LLVM_VERSION }} --target install --push

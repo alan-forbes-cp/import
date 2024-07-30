@@ -1,0 +1,128 @@
+---
+stages:
+  - build-base
+  - build
+  - deploy
+  - notify
+
+.arm_linux:
+  image: docker:latest
+  tags: [linux-docker-images-arm64]
+.linux:
+  tags: [dev-linux-docker-images]
+.windows:
+  tags: [windows-docker-images]
+
+.login:
+  before_script:
+    - docker login
+        -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+
+.changes: &changes
+  - .gitlab-ci.yml
+  - dockerfiles/*
+
+.build:
+  extends: [.login]
+  rules:
+    # Run when the default branch changes
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes: *changes
+    # Run when a merge request is created/updated
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes: *changes
+    # Run when an upstream project triggers us
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+      changes: *changes
+  script:
+    # Build docker container
+    - echo $IMAGE
+    - echo $ARCH    
+    - echo $DOCKERFILE
+    - docker build
+        --file=dockerfiles/$DOCKERFILE
+        --tag="${CI_REGISTRY}/computeaorta/ci/${NAME}:$VERSION-$ARCH-$CI_COMMIT_SHORT_SHA"
+        --build-arg ARCH="${ARCH}"        
+        --build-arg IMAGE="${IMAGE}"
+        --build-arg CI_JOB_TOKEN="${CI_JOB_TOKEN}"
+        --build-arg SOURCE_BUILDS_IMAGE="${CI_REGISTRY}/computeaorta/ci/${NAME}-source-packages:$VERSION-$CI_COMMIT_SHORT_SHA"
+        --no-cache=true .
+    # Push the intermediate tag
+    - docker push "$CI_REGISTRY/computeaorta/ci/${NAME}:$VERSION-$ARCH-$CI_COMMIT_SHORT_SHA"
+
+.deploy:
+  extends: [.login]
+  stage: deploy
+  rules:
+    # Run when the default branch changes
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      changes: *changes
+    # Run when an upstream project triggers us
+    - if: $CI_PIPELINE_SOURCE == "pipeline"
+      changes: *changes
+  script:
+    # Pull the intermediate tag
+    - docker pull "$CI_REGISTRY/computeaorta/ci/${NAME}:$VERSION-$ARCH-$CI_COMMIT_SHORT_SHA"
+    # Add the deploy tag
+    - docker tag
+        "$CI_REGISTRY/computeaorta/ci/${NAME}:$VERSION-$ARCH-$CI_COMMIT_SHORT_SHA"
+        "$CI_REGISTRY/computeaorta/ci/${NAME}:$VERSION-$ARCH"
+    # Push the deploy tag
+    - docker push "$CI_REGISTRY/computeaorta/ci/${NAME}:$VERSION-$ARCH"
+
+include:
+  - local: .gitlab/components/single_os.yml
+    inputs:
+      arch: x86_64
+      arch_extends: .linux
+      os: ubuntu
+      os_version: "20.04"
+      os_image_extension: "-20.04"
+
+  - local: .gitlab/components/single_os.yml
+    inputs:
+      arch: x86_64
+      arch_extends: .linux
+      os: ubuntu
+      os_version: "22.04"
+      os_image_extension: "-22.04"
+
+  - local: .gitlab/components/single_os.yml
+    inputs:
+      arch: x86_64
+      arch_extends: .linux
+      os: ubuntu
+      os_version: "24.04"
+      os_image_extension: "-24.04"
+
+  - local: .gitlab/components/single_os.yml
+    inputs:
+      arch: arm64
+      arch_extends: .arm_linux
+      os: ubuntu
+      os_version: "20.04"
+      os_image_extension: "-20.04"
+
+  - local: .gitlab/components/single_os.yml
+    inputs:
+      arch: arm64
+      arch_extends: .arm_linux
+      os: ubuntu
+      os_version: "22.04"
+      os_image_extension: "-22.04"
+
+  - local: .gitlab/components/single_os.yml
+    inputs:
+      arch: arm64
+      arch_extends: .arm_linux
+      os: ubuntu
+      os_version: "24.04"
+      os_image_extension: "-24.04"
+
+  - local: .gitlab/components/single_os.yml
+    inputs:
+      arch: x86_64
+      arch_extends: .windows
+      os: windows
+      os_version: "10"
+      os_image_extension: ""

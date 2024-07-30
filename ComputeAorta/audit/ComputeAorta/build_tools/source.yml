@@ -1,0 +1,62 @@
+---
+default:
+  interruptible: true
+
+stages:
+  - lint
+  - test
+  - deploy
+
+lint:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu-base:18.04
+  stage: lint
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  before_script:
+    - pip install pylint==2.7.0 pylint_junit
+  script:
+    - python scripts/check-version.py --xml
+        origin/$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+        origin/$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    - pylint --ignore-patterns=test/*
+        --output-format=pylint_junit.JUnitReporter
+        build_tools > pylint.xml
+  artifacts:
+    reports:
+      junit: ['*.xml']
+
+.test:
+  stage: test
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  before_script:
+    - pip install . unittest-xml-reporting
+  script:
+    - python -m xmlrunner -o $CI_PROJECT_DIR/xml discover test
+  artifacts:
+    reports:
+      junit: ['$CI_PROJECT_DIR/xml/*.xml']
+
+test-ubuntu:18.04:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu-base:18.04
+  extends: .test
+
+test-ubuntu:20.04:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu-base:20.04
+  extends: .test
+
+test-windows:10:
+  tags: [windows]
+  image: $CI_REGISTRY/computeaorta/ci/windows-base:10
+  extends: .test
+
+deploy-images:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  trigger:
+    project: computeaorta/ci
+    branch: develop

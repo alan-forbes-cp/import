@@ -1,0 +1,35 @@
+name: ComputeAorta/PerfCL
+on:
+  push:
+  workflow_dispatch:
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+env:
+  STORAGE_USER: "${{ secrets.STORAGE_USER }}"
+  STORAGE_PASS: "${{ secrets.STORAGE_PASS }}"
+  ZULIP_TOKEN: "${{ secrets.ZULIP_TOKEN }}"
+  ComputeAortaCL_TOKEN: "${{ secrets.ComputeAortaCL_TOKEN }}"
+  ComputeAortaCLVK_TOKEN: "${{ secrets.ComputeAortaCLVK_TOKEN }}"
+  SCCACHE_REDIS: redisREDACTED01.office.codeplay.com
+  OLD_CA_GITLAB_API_TOKEN: "${{ secrets.OLD_CA_GITLAB_API_TOKEN }}"
+  OLD_CA_GIT_WRITE_TOKEN: "${{ secrets.OLD_CA_GIT_WRITE_TOKEN }}"
+  CLICOLOR_FORCE: '1'
+  GTEST_COLOR: 'yes'
+  CA_GIT_WRITE_TOKEN: "${{ secrets.CA_GIT_WRITE_TOKEN }}"
+  CA_GITLAB_API_TOKEN: "${{ secrets.CA_GITLAB_API_TOKEN }}"
+  LLVM_GIT_WRITE_TOKEN: zrHPYsf6BVupQeYySmnH
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == "merge_request_event"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        lfs: true
+    - run: git submodule update --init --recursive
+    - run: git log -1
+    - run: python -u scripts/build.py -GNinja --pull --clean -DPERFCL_ITERATIONS=1 --target bench

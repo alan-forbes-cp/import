@@ -1,0 +1,18 @@
+There was an error extracting the GitLab CI pipeline (ComputeAorta/oneapi-construction-kit)
+Message: Unable to locate pipeline for ComputeAorta/oneapi-construction-kit
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:39:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'

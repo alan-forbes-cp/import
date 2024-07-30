@@ -1,0 +1,100 @@
+name: ComputeAorta/build_tools
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+env:
+  STORAGE_USER: "${{ secrets.STORAGE_USER }}"
+  STORAGE_PASS: "${{ secrets.STORAGE_PASS }}"
+  ZULIP_TOKEN: "${{ secrets.ZULIP_TOKEN }}"
+  ComputeAortaCL_TOKEN: "${{ secrets.ComputeAortaCL_TOKEN }}"
+  ComputeAortaCLVK_TOKEN: "${{ secrets.ComputeAortaCLVK_TOKEN }}"
+  SCCACHE_REDIS: redisREDACTED01.office.codeplay.com
+  OLD_CA_GITLAB_API_TOKEN: "${{ secrets.OLD_CA_GITLAB_API_TOKEN }}"
+  OLD_CA_GIT_WRITE_TOKEN: "${{ secrets.OLD_CA_GIT_WRITE_TOKEN }}"
+  CLICOLOR_FORCE: '1'
+  GTEST_COLOR: 'yes'
+  CA_GIT_WRITE_TOKEN: "${{ secrets.CA_GIT_WRITE_TOKEN }}"
+  CA_GITLAB_API_TOKEN: "${{ secrets.CA_GITLAB_API_TOKEN }}"
+  LLVM_GIT_WRITE_TOKEN: zrHPYsf6BVupQeYySmnH
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu-base:18.04"
+    if: ${{ github.event_name }} == "merge_request_event"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        lfs: true
+    - run: pip install pylint==2.7.0 pylint_junit
+    - run: python scripts/check-version.py --xml origin/${{ github.event.pull_request.head.ref }} origin/${{ github.event.pull_request.base.ref }}
+    - run: pylint --ignore-patterns=test/* --output-format=pylint_junit.JUnitReporter build_tools > pylint.xml
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+  test-ubuntu-18-04:
+    needs: lint
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu-base:18.04"
+    if: ${{ github.event_name }} == "merge_request_event"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: pip install . unittest-xml-reporting
+    - run: python -m xmlrunner -o ${{ github.workspace }}/xml discover test
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+  test-ubuntu-20-04:
+    needs: lint
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu-base:20.04"
+    if: ${{ github.event_name }} == "merge_request_event"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: pip install . unittest-xml-reporting
+    - run: python -m xmlrunner -o ${{ github.workspace }}/xml discover test
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+  test-windows-10:
+    needs: lint
+    runs-on: windows-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/windows-base:10"
+    if: ${{ github.event_name }} == "merge_request_event"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: pip install . unittest-xml-reporting
+    - run: python -m xmlrunner -o ${{ github.workspace }}/xml discover test
+#     # 'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+  deploy-images:
+    needs:
+    - test-ubuntu-18-04
+    - test-ubuntu-20-04
+    - test-windows-10
+    runs-on: ubuntu-latest
+    if: ${{ github.ref }} == $CI_DEFAULT_BRANCH
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - name: Run downstream workflow
+      run: gh workflow run $WORKFLOW_FILE --repo computeaorta/ci
+      env:
+        WORKFLOW_FILE: UPDATE_ME
+        GH_TOKEN: "${{ github.token }}"

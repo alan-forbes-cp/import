@@ -1,0 +1,64 @@
+---
+.llvm_versions: &llvm_versions
+  LLVM_VERSION: ['14']
+
+.ubuntu:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04
+  parallel:
+    matrix:
+      - ARCH: ['x86', 'x86_64', 'arm', 'aarch64']
+        <<: *llvm_versions
+  before_script:
+    - git submodule update --init --recursive
+    # TODO: Should we just bump the CMake version in the 18.04 image?
+    - pip install cmake
+
+.windows:
+  tags: [windows]
+  image: $CI_REGISTRY/computeaorta/ci/windows:10
+  parallel:
+    matrix:
+      - ARCH: ['x86_64']
+        <<: *llvm_versions
+  before_script:
+    - git submodule update --init --recursive
+    - cmake --version
+
+.build:
+  interruptible: true
+  stage: build
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - python -u scripts/build.py -Bbuild -GNinja
+        --verbose
+        --build_type Release
+        --arch $ARCH
+        --llvm-version $LLVM_VERSION
+        --target install
+
+.deploy:
+  stage: deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - python -u scripts/build.py -Bbuild -GNinja
+        --verbose
+        --build_type Release
+        --arch $ARCH
+        --llvm-version $LLVM_VERSION
+        --target install
+        --push
+
+build-ubuntu:
+  extends: [.build, .ubuntu]
+
+build-windows:
+  extends: [.build, .windows]
+
+deploy-ubuntu:
+  extends: [.deploy, .ubuntu]
+
+deploy-windows:
+  extends: [.deploy, .windows]

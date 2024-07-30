@@ -1,0 +1,260 @@
+---
+variables:
+  GIT_STRATEGY: clone
+  OCK_BRANCH:
+    value: "main"
+    description: "Branch of OCK to build"
+  GITHUB_USER:
+    value: "codeplaysoftware"
+    description: "Github user account for checkout"
+  LLVM_LATEST:
+    value: "release_180"
+    description: "Primary sharedstorage name of LLVM artefact to use"
+  LLVM_PREVIOUS:
+    value: "release_170"
+    description: "Secondary sharedstorage name of LLVM artefact to use (set to the same as LLVM_LATEST to only build one version)"
+  MERGE_TO_STABLE:
+    value: "false"
+    description: "Update the `stable` tag on the Gitlab repo"
+  CA_PIPELINE_TYPE:
+    value: "nightly"
+    options:
+      - "release"
+      - "stable"
+      - "nightly"
+      - "cleaner"
+    description: "Pipeline type"
+  CA_LLVM_BRANCH:
+    value: "develop"
+    description: "Branch to use for ca-llvm (not LLVM itself); used when running the sanitizers"
+  CA_CTS_TYPE_X86:
+    value: "wimpy"
+    options:
+      - "none"
+      - "wimpy"
+      - "full"
+    description: "OpenCL CTS type x86/x86_64"
+  CA_CTS_TYPE_ARM:
+    value: "wimpy"
+    options:
+      - "none"
+      - "wimpy"
+      - "full"
+    description: "OpenCL CTS type arm/AArch64"
+  CA_CTS_TYPE_RISCV:
+    value: "wimpy"
+    options:
+      - "none"
+      - "wimpy"
+      - "full"
+    description: "OpenCL CTS type RISC-V"
+
+  RUN_DOC:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run docs"
+  RUN_BUILD_TEST:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run all build and test related tests including clang-tidy"
+  MR_TARGET_BRANCH:
+    value: "main"
+    description: "Target branch for merging and testing"
+  RUN_SYCL_LLVM:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run DPC++ LLVM SYCL test suite; requires RUN_LINUX_RISCV"
+  RUN_SYCL_CTS:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run SYCL CTS test suite; implies building DPC++ and requires either RUN_LINUX_HOST and/or RUN_LINUX_RISCV"
+  RUN_WINDOWS_HOST:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run Windows builds/tests"
+  RUN_ARM_CROSS_HOST:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run ARM cross compile builds/tests"
+  RUN_RISCV_CROSS_HOST:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run RISC-V cross compile builds"
+  RUN_LINUX_HOST:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run Linux x86/x86_64 non-riscv builds/tests"
+  RUN_LINUX_RISCV:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run Linux x86_64 riscv refsi simulator builds/tests"
+  RUN_WEIRD_PIPELINE:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run the 'weird' tests (which check various build configurations)"
+  RUN_SANITIZERS:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run the address and thread sanitizer checks"
+  RUN_TIDY:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Run the clang tidy checks (offline requires RUN_LINUX_HOST)"
+  RUN_BUILD_LLVM:
+    value: "0"
+    options:
+      - "0"
+      - "1"
+    description: "Trigger a build of ca-llvm to build LLVM artifacts as part of this build. Only `LLVM_LATEST` will be built"
+  BUILD_LLVM_BRANCHNAME:
+    value: "main"
+    description: "Branchname to build for LLVM, ignored unless `RUN_BUILD_LLVM` is set"
+  BUILD_LLVM_CALLVM_BRANCH:
+    value: "develop"
+    description: "Branchname of ca-llvm to use for building LLVM, ignored unless `RUN_BUILD_LLVM` is set"
+  SEND_ZULIP:
+    value: "0"
+    options:
+      - "0"
+      - "1"
+    description: "Send a job success/failure notification to Zulip."
+  BUILD_DPCPP_BRANCH:
+    value: "sycl"
+    description: "Branch to build for DPC++"
+  RUN_NATIVE_CPU_SYCL_CTS:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Enable running native cpu sycl cts"
+  RUN_REMOTE_HAL:
+    value: "1"
+    options:
+      - "0"
+      - "1"
+    description: "Enable running remote hal"
+stages:
+  - lint
+  - info
+  - build
+  - test
+  - deploy
+  - pre release
+  - release
+
+.ubuntu20:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64
+
+.windows:
+  tags: [windows]
+  image: $CI_REGISTRY/computeaorta/ci/windows:10-x86_64
+
+include:
+  - local: .gitlab/ci/merge-request.yml
+  - local: .gitlab/ci/stable.yml
+  - local: .gitlab/ci/release.yml
+
+env-info:
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "schedule")
+          && $CA_PIPELINE_TYPE == "nightly"
+  stage: info
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64
+  script:
+    - "echo \"Building: $LLVM_PREVIOUS / $LLVM_LATEST\""
+    - env
+
+ca-nightly-pipeline:
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == "web" || $CI_PIPELINE_SOURCE == "schedule")
+          && $CA_PIPELINE_TYPE == "nightly"
+  # Empty needs list ensures that this is not blocked on env-info above
+  needs: []
+  variables:
+    # These need a different name from the input to allow these values to be defaulted
+    # TODO move the Cavium server into gitlab's care
+    NIGHTLY_CA_HAVE_NATIVE_AARCH64: "false"
+    # Variables specified in the GitLab UI are not automatically passed to child
+    # pipelines, therefore we need to manually forward them here:
+    # See REDACTED-org/gitlab/-/issues/213729
+    NIGHTLY_CA_CTS_TYPE_X86: "$CA_CTS_TYPE_X86"
+    NIGHTLY_CA_CTS_TYPE_ARM: "$CA_CTS_TYPE_ARM"
+    NIGHTLY_CA_CTS_TYPE_RISCV: "$CA_CTS_TYPE_RISCV"
+    NIGHTLY_OCK_BRANCH: "$OCK_BRANCH"
+    NIGHTLY_LLVM_PREVIOUS: "$LLVM_PREVIOUS"
+    NIGHTLY_LLVM_LATEST: "$LLVM_LATEST"
+    NIGHTLY_GITHUB_USER: "$GITHUB_USER"
+    NIGHTLY_MERGE_TO_STABLE: "$MERGE_TO_STABLE"
+    NIGHTLY_CA_LLVM_BRANCH: "$CA_LLVM_BRANCH"
+    NIGHTLY_RUN_SYCL_LLVM: "$RUN_SYCL_LLVM"
+    NIGHTLY_RUN_SYCL_CTS: "$RUN_SYCL_CTS"
+    NIGHTLY_RUN_NATIVE_CPU_SYCL_CTS: "$RUN_NATIVE_CPU_SYCL_CTS"    
+    NIGHTLY_RUN_WEIRD_PIPELINE: "$RUN_WEIRD_PIPELINE"
+    NIGHTLY_RUN_WINDOWS_HOST: "$RUN_WINDOWS_HOST"
+    NIGHTLY_RUN_ARM_CROSS_HOST: "$RUN_ARM_CROSS_HOST"
+    NIGHTLY_RUN_RISCV_CROSS_HOST: "$RUN_RISCV_CROSS_HOST"
+    NIGHTLY_RUN_LINUX_HOST: "$RUN_LINUX_HOST"
+    NIGHTLY_RUN_LINUX_RISCV: "$RUN_LINUX_RISCV"
+    NIGHTLY_RUN_SANITIZERS: "$RUN_SANITIZERS"
+    NIGHTLY_RUN_BUILD_LLVM: "$RUN_BUILD_LLVM"
+    NIGHTLY_BUILD_LLVM_BRANCHNAME: "$BUILD_LLVM_BRANCHNAME"
+    NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: "$BUILD_LLVM_CALLVM_BRANCH"
+    NIGHTLY_RUN_TIDY: "$RUN_TIDY"
+    NIGHTLY_BUILD_DPCPP_BRANCH: "$BUILD_DPCPP_BRANCH"
+    NIGHTLY_SEND_ZULIP: "$SEND_ZULIP"
+    NIGHTLY_RUN_REMOTE_HAL: "$RUN_REMOTE_HAL"
+
+  trigger:
+    # FIXME: Move to conditional include once
+    # REDACTED-org/gitlab/-/issues/276515 is resolved. We have
+    # to use a parent / child pipeline here because of missing features in
+    # gitlab. The nightly pipeline itself uses local includes and `extends:` of
+    # disabled "mixin", jobs and many individual jobs therein use `rules:`.
+    # This, in conjunction with `matrix` and the "mixin pattern" to reuse job
+    # parts, does not work as `rules` inheritance works via override (not
+    # merge), so everything becomes coupled, and brittle if we manually patch
+    # each job's rules to include this test.
+    # Making those individual jobs conditional via `rules:` couples everything
+    # up tightly because they then depend on certain top-level rules.
+    # Other things tried:
+    # - `workflow:` with `rules:` this is top-level, and prevents *any* job from
+    # running if the condition doesn't match - not just those jobs in the file
+    # that used `workflow:`
+    # - hacks with `extends:` becomes very brittle, very fast, and couples the
+    # primitive mixins to their parents
+    # - yaml anchors: very verbose and has similar coupling problems as
+    # `extends`:
+    # - `needs:` with a job that conditionally fails based on expression of
+    # these `rules:`: YUCK. Also has issues with coupling (not so bad though).
+    #
+    # All in all, the parent/child pipeline is the cleanest way of doing this
+    # for now. However, job-cancellation must be borne in mind as triggered
+    # parents escape the reaper when it comes for the parent...
+    include: .gitlab/ci/nightly_pipeline.yml
+    strategy: depend

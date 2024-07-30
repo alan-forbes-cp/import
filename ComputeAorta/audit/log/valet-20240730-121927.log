@@ -1,0 +1,1245 @@
+# Logfile created on 2024-07-30 12:19:27 +0000 by logger.rb/v1.6.0
+I, [2024-07-30T12:19:27.763523 #1]  INFO -- : Using GitHub Features: Defaults
+I, [2024-07-30T12:19:27.763586 #1]  INFO -- : Auditing 'https://10.54.10.74/ComputeAorta'
+I, [2024-07-30T12:19:27.805358 #1]  INFO -- request: GET https://10.54.10.74/api/v4/groups/ComputeAorta/projects
+I, [2024-07-30T12:19:29.390961 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:29.410004 #1]  INFO -- request: GET REDACTED4/groups/ComputeAorta/projects?id=ComputeAorta&include_ancestor_groups=false&include_subgroups=false&order_by=created_at&owned=false&page=2&per_page=20&simple=false&sort=desc&starred=false&with_custom_attributes=false&with_issues_enabled=false&with_merge_requests_enabled=false&with_security_reports=false&with_shared=true
+I, [2024-07-30T12:19:30.993803 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:31.021096 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Freleases/pipelines?per_page=1
+I, [2024-07-30T12:19:31.134579 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:31.136539 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/pipelines?per_page=1
+I, [2024-07-30T12:19:31.333814 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:31.335740 #1]  INFO -- : Thread collection size: 4
+I, [2024-07-30T12:19:31.350277 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Foneapi-construction-kit-ci/pipelines?per_page=1
+I, [2024-07-30T12:19:31.354272 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github
+I, [2024-07-30T12:19:31.466624 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:31.469602 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Foneapi-construction-kit/pipelines?per_page=1
+I, [2024-07-30T12:19:31.678230 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:31.686996 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fin2demo/pipelines?per_page=1
+I, [2024-07-30T12:19:31.688193 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Foneapi-construction-kit
+I, [2024-07-30T12:19:31.748763 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:31.771140 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github
+I, [2024-07-30T12:19:31.885056 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:31.887197 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Friscv_examples/pipelines?per_page=1
+I, [2024-07-30T12:19:32.086073 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:32.087896 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fllvm-project/pipelines?per_page=1
+I, [2024-07-30T12:19:32.106449 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:32.117374 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Foneapi-construction-kit
+I, [2024-07-30T12:19:32.229246 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:32.230333 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci.yml?ref=main
+I, [2024-07-30T12:19:32.338668 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:32.340563 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/webservices%2Facoran-for-risc-v-documentation/pipelines?per_page=1
+I, [2024-07-30T12:19:32.544311 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:32.547864 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/variables
+I, [2024-07-30T12:19:32.571850 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:32.575296 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Foneapi-construction-kit/repository/files/.gitlab%2Fci.yml@ComputeAorta%2Fci-github:main?ref=main
+I, [2024-07-30T12:19:32.580402 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:32.585549 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-experiments/pipelines?per_page=1
+I, [2024-07-30T12:19:32.587545 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/webservices%2Facoran-for-risc-v-documentation
+I, [2024-07-30T12:19:32.813797 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:32.815815 #1]  INFO -- request: GET https://10.54.10.74/api/v4/groups/ComputeAorta/variables
+I, [2024-07-30T12:19:32.873118 #1]  INFO -- response: Status 404
+W, [2024-07-30T12:19:32.874051 #1]  WARN -- : Resource not found
+(GET 404) Not Found: https://10.54.10.74/api/v4/projects/ComputeAorta%2Foneapi-construction-kit/repository/files/.gitlab%2Fci.yml@ComputeAorta%2Fci-github:main?ref=main
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/parse_response.rb:14:in `parse!'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:125:in `fetch'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:78:in `fetch_file'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_file.rb:14:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:105:in `pipeline_attributes_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:35:in `block in call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/concerns/cli_utilities.rb:132:in `source_file_from_local_or_scm'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:34:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'
+I, [2024-07-30T12:19:32.874798 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Foneapi-construction-kit/variables
+I, [2024-07-30T12:19:32.905932 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:32.908029 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fecosystem-test-scripts/pipelines?per_page=1
+I, [2024-07-30T12:19:32.908526 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-experiments
+I, [2024-07-30T12:19:33.120048 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.124649 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/webservices%2Facoran-for-risc-v-documentation
+I, [2024-07-30T12:19:33.155322 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.156958 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/pipeline_schedules
+I, [2024-07-30T12:19:33.157083 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.157180 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.160915 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Foneapi-construction-kit/pipeline_schedules
+I, [2024-07-30T12:19:33.161647 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FOpenCL-Intercept-Layer/pipelines?per_page=1
+I, [2024-07-30T12:19:33.260249 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.262580 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-experiments
+I, [2024-07-30T12:19:33.355154 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:33.355712 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCI/pipelines?per_page=1
+I, [2024-07-30T12:19:33.381526 #1]  INFO -- response: Status 200
+W, [2024-07-30T12:19:33.382712 #1]  WARN -- : There was an error extracting the GitLab CI pipeline (ComputeAorta/oneapi-construction-kit)
+Message: Unable to locate pipeline for ComputeAorta/oneapi-construction-kit
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:39:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'
+I, [2024-07-30T12:19:33.383794 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fecosystem-test-scripts
+I, [2024-07-30T12:19:33.590750 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.598117 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Fmerge-request.yml?ref=main
+I, [2024-07-30T12:19:33.627023 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.628191 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/webservices%2Facoran-for-risc-v-documentation/repository/files/.gitlab-ci.yml?ref=master
+I, [2024-07-30T12:19:33.651830 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.652945 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHAL/pipelines?per_page=1
+I, [2024-07-30T12:19:33.696856 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.698334 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-experiments/repository/files/.gitlab-ci.yml?ref=develop
+I, [2024-07-30T12:19:33.893175 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.896196 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fecosystem-test-scripts
+I, [2024-07-30T12:19:33.932396 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.934382 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Ffp16_cpp_maths/pipelines?per_page=1
+I, [2024-07-30T12:19:33.934593 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.946239 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Fstable.yml?ref=main
+I, [2024-07-30T12:19:33.950321 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.951478 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/webservices%2Facoran-for-risc-v-documentation/variables
+I, [2024-07-30T12:19:33.970597 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:33.971428 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-experiments/variables
+I, [2024-07-30T12:19:34.152728 #1]  INFO -- response: Status 403
+W, [2024-07-30T12:19:34.153358 #1]  WARN -- : There was an error extracting the GitLab CI pipeline (webservices/acoran-for-risc-v-documentation)
+Message: (GET 403) Forbidden: https://10.54.10.74/api/v4/projects/webservices%2Facoran-for-risc-v-documentation/variables
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/parse_response.rb:22:in `parse!'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:125:in `fetch'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:26:in `fetch_variables'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:111:in `pipeline_attributes_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:35:in `block in call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/concerns/cli_utilities.rb:132:in `source_file_from_local_or_scm'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:34:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'
+I, [2024-07-30T12:19:34.154954 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCI
+I, [2024-07-30T12:19:34.158070 #1]  INFO -- response: Status 403
+W, [2024-07-30T12:19:34.158814 #1]  WARN -- : There was an error extracting the GitLab CI pipeline (ComputeAorta/ci-experiments)
+Message: (GET 403) Forbidden: https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-experiments/variables
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/parse_response.rb:22:in `parse!'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:125:in `fetch'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:26:in `fetch_variables'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:111:in `pipeline_attributes_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:35:in `block in call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/concerns/cli_utilities.rb:132:in `source_file_from_local_or_scm'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:34:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'
+I, [2024-07-30T12:19:34.159842 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHAL
+I, [2024-07-30T12:19:34.163988 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:34.164617 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCA-OpenCL-CTS/pipelines?per_page=1
+I, [2024-07-30T12:19:34.283136 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:34.286637 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Futility_jobs.yml?ref=main
+I, [2024-07-30T12:19:34.340711 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:34.342805 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fecosystem-test-scripts/repository/files/.gitlab-ci.yml?ref=main
+I, [2024-07-30T12:19:34.402819 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:34.403638 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fclfuzz/pipelines?per_page=1
+I, [2024-07-30T12:19:34.548408 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:34.550234 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCI
+I, [2024-07-30T12:19:34.580690 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:34.582947 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHAL
+I, [2024-07-30T12:19:34.605636 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:34.609126 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Frelease.yml?ref=main
+I, [2024-07-30T12:19:34.656801 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:34.657540 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FOpenCL-ICD-Loader/pipelines?per_page=1
+I, [2024-07-30T12:19:34.671540 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:34.673125 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fecosystem-test-scripts/variables
+I, [2024-07-30T12:19:34.890834 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:34.891779 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHandbook/pipelines?per_page=1
+I, [2024-07-30T12:19:34.912516 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:34.914922 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fecosystem-test-scripts/pipeline_schedules
+I, [2024-07-30T12:19:35.019650 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.019826 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.037512 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Fnightly_pipeline.yml?ref=main
+I, [2024-07-30T12:19:35.037985 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCI/repository/files/.gitlab-ci.yml?ref=develop
+I, [2024-07-30T12:19:35.150511 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.153814 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHAL/repository/files/.gitlab-ci.yml?ref=develop
+I, [2024-07-30T12:19:35.189432 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.192493 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/SC1%2Fsc1_TheExercisorApplication/pipelines?per_page=1
+I, [2024-07-30T12:19:35.249490 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.264065 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fecosystem-test-scripts/repository/files/.gitlab%2Fprojects.yml?ref=main
+I, [2024-07-30T12:19:35.329987 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.333704 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCI/variables
+I, [2024-07-30T12:19:35.367854 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.407107 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Fbuild_and_test.yml?ref=main
+I, [2024-07-30T12:19:35.426868 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:35.428704 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FJenkins-Fuzz/pipelines?per_page=1
+I, [2024-07-30T12:19:35.509427 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.511662 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHAL/variables
+I, [2024-07-30T12:19:35.584479 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.589008 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCI/pipeline_schedules
+I, [2024-07-30T12:19:35.609137 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.621924 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCA-OpenCL-CTS
+I, [2024-07-30T12:19:35.655133 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:35.657111 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FOpenCL-CTS/pipelines?per_page=1
+I, [2024-07-30T12:19:35.685766 #1]  INFO -- response: Status 403
+W, [2024-07-30T12:19:35.687289 #1]  WARN -- : There was an error extracting the GitLab CI pipeline (ComputeAorta/HAL)
+Message: (GET 403) Forbidden: https://10.54.10.74/api/v4/projects/ComputeAorta%2FHAL/variables
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/parse_response.rb:22:in `parse!'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:125:in `fetch'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:26:in `fetch_variables'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:111:in `pipeline_attributes_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:35:in `block in call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/concerns/cli_utilities.rb:132:in `source_file_from_local_or_scm'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:34:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'
+I, [2024-07-30T12:19:35.690058 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHandbook
+I, [2024-07-30T12:19:35.761246 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.768419 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Fbuild_sanitizers.yml?ref=main
+I, [2024-07-30T12:19:35.820173 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:35.835764 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCI/repository/files/.gitlab%2Fcomponents%2Fsingle_os.yml?ref=develop
+I, [2024-07-30T12:19:35.862578 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:35.863676 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fvk-external/pipelines?per_page=1
+I, [2024-07-30T12:19:36.022385 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.028960 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCA-OpenCL-CTS
+I, [2024-07-30T12:19:36.081106 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.082675 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fca-llvm/pipelines?per_page=1
+I, [2024-07-30T12:19:36.083641 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.087647 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.093141 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Funitcl.yml?ref=main
+I, [2024-07-30T12:19:36.098395 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.103901 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHandbook
+I, [2024-07-30T12:19:36.249258 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.253494 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FOpenCL-Headers/pipelines?per_page=1
+I, [2024-07-30T12:19:36.254840 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fca-llvm
+I, [2024-07-30T12:19:36.262862 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.282512 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Fnightly_build_test_weird.yml?ref=main
+I, [2024-07-30T12:19:36.333662 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.335340 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHandbook/repository/files/.gitlab-ci.yml?ref=main
+I, [2024-07-30T12:19:36.406065 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.408445 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Flit/pipelines?per_page=1
+I, [2024-07-30T12:19:36.426516 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.429437 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCA-OpenCL-CTS/repository/files/.gitlab-ci.yml?ref=develop
+I, [2024-07-30T12:19:36.461436 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.492934 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Foneapi.yml?ref=main
+I, [2024-07-30T12:19:36.522979 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.529244 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fca-llvm
+I, [2024-07-30T12:19:36.579988 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.580749 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fbuild_tools/pipelines?per_page=1
+I, [2024-07-30T12:19:36.633148 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.636150 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.638213 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHandbook/variables
+I, [2024-07-30T12:19:36.641970 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCA-OpenCL-CTS/variables
+I, [2024-07-30T12:19:36.833202 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.851130 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Fcomponents%2Fopencl-cts-linux.yml?ref=main
+I, [2024-07-30T12:19:36.853744 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.855284 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fcargo/pipelines?per_page=1
+I, [2024-07-30T12:19:36.899263 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.901792 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCA-OpenCL-CTS/pipeline_schedules
+I, [2024-07-30T12:19:36.978401 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:36.983333 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FHandbook/pipeline_schedules
+I, [2024-07-30T12:19:37.035635 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.038574 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fca-llvm/repository/files/.gitlab-ci.yml?ref=develop
+I, [2024-07-30T12:19:37.097834 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.100219 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/tensorflow%2Ftf_jenkins/pipelines?per_page=1
+I, [2024-07-30T12:19:37.151051 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.160136 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fbuild_tools
+I, [2024-07-30T12:19:37.183995 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.232619 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fci-github/repository/files/.gitlab%2Fci%2Fremote_hal_build.yml?ref=main
+I, [2024-07-30T12:19:37.283609 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.324293 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:37.327738 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FPolly/pipelines?per_page=1
+I, [2024-07-30T12:19:37.329909 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.331606 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fca-llvm/variables
+I, [2024-07-30T12:19:37.517643 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.546712 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.552043 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fca-llvm/pipeline_schedules
+I, [2024-07-30T12:19:37.557250 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.559663 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FCoverage/pipelines?per_page=1
+I, [2024-07-30T12:19:37.615830 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.621991 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fbuild_tools
+I, [2024-07-30T12:19:37.762933 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.765420 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FKernelsCL/pipelines?per_page=1
+I, [2024-07-30T12:19:37.822478 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.981405 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:37.983575 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FVulkan-LoaderAndValidationLayers/pipelines?per_page=1
+I, [2024-07-30T12:19:38.043970 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:38.046812 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fbuild_tools/repository/files/.gitlab-ci.yml?ref=develop
+I, [2024-07-30T12:19:38.203812 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:38.204645 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fbuild-utils/pipelines?per_page=1
+I, [2024-07-30T12:19:38.348496 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:38.350678 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fbuild_tools/variables
+I, [2024-07-30T12:19:38.422305 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:38.425145 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FMM1_SC/pipelines?per_page=1
+I, [2024-07-30T12:19:38.648771 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:38.650982 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FPerfCL/pipelines?per_page=1
+I, [2024-07-30T12:19:38.904699 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:38.909783 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FVK/pipelines?per_page=1
+I, [2024-07-30T12:19:38.911200 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FPerfCL
+I, [2024-07-30T12:19:39.172876 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:39.177047 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FJenkins/pipelines?per_page=1
+I, [2024-07-30T12:19:39.178146 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FVK
+I, [2024-07-30T12:19:39.402883 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:39.404589 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FTreaCL/pipelines?per_page=1
+I, [2024-07-30T12:19:39.454685 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:39.461086 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FPerfCL
+I, [2024-07-30T12:19:39.577171 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:39.584185 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2Fbuild_tools/pipeline_schedules
+I, [2024-07-30T12:19:39.605370 #1]  INFO -- response: Status 403
+I, [2024-07-30T12:19:39.609074 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FComputeAorta/pipelines?per_page=1
+I, [2024-07-30T12:19:39.612125 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:39.617608 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FVK
+I, [2024-07-30T12:19:39.836289 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:39.930997 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:39.935282 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FPerfCL/repository/files/.gitlab-ci.yml?ref=develop
+I, [2024-07-30T12:19:39.940446 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:39.943676 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FComputeAorta
+I, [2024-07-30T12:19:40.101896 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:40.104166 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FVK/repository/files/.gitlab-ci.yml?ref=develop
+I, [2024-07-30T12:19:40.204382 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:40.207013 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FPerfCL/variables
+I, [2024-07-30T12:19:40.337126 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:40.345561 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FComputeAorta
+I, [2024-07-30T12:19:40.345909 #1]  INFO -- response: Status 404
+W, [2024-07-30T12:19:40.397521 #1]  WARN -- : Resource not found
+(GET 404) Not Found: https://10.54.10.74/api/v4/projects/ComputeAorta%2FVK/repository/files/.gitlab-ci.yml?ref=develop
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/parse_response.rb:14:in `parse!'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:125:in `fetch'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:78:in `fetch_file'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_file.rb:14:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:105:in `pipeline_attributes_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:35:in `block in call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/concerns/cli_utilities.rb:132:in `source_file_from_local_or_scm'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:34:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'
+I, [2024-07-30T12:19:40.398575 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FVK/variables
+I, [2024-07-30T12:19:40.404690 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:40.407784 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FPerfCL/pipeline_schedules
+I, [2024-07-30T12:19:40.564336 #1]  INFO -- response: Status 403
+W, [2024-07-30T12:19:40.566324 #1]  WARN -- : There was an error extracting the GitLab CI pipeline (ComputeAorta/VK)
+Message: (GET 403) Forbidden: https://10.54.10.74/api/v4/projects/ComputeAorta%2FVK/variables
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/parse_response.rb:22:in `parse!'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:125:in `fetch'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:26:in `fetch_variables'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:111:in `pipeline_attributes_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:35:in `block in call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/concerns/cli_utilities.rb:132:in `source_file_from_local_or_scm'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:34:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'
+I, [2024-07-30T12:19:40.641990 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:40.718767 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:40.721628 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FComputeAorta/repository/files/.gitlab%2Fci.yml?ref=develop
+I, [2024-07-30T12:19:41.005666 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:19:41.008023 #1]  INFO -- request: GET https://10.54.10.74/api/v4/projects/ComputeAorta%2FComputeAorta/variables
+I, [2024-07-30T12:19:41.125963 #1]  INFO -- response: Status 403
+W, [2024-07-30T12:19:41.127566 #1]  WARN -- : There was an error extracting the GitLab CI pipeline (ComputeAorta/ComputeAorta)
+Message: (GET 403) Forbidden: https://10.54.10.74/api/v4/projects/ComputeAorta%2FComputeAorta/variables
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/parse_response.rb:22:in `parse!'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:125:in `fetch'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/adapters/gitlab_ci/client.rb:26:in `fetch_variables'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:111:in `pipeline_attributes_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:35:in `block in call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/concerns/cli_utilities.rb:132:in `source_file_from_local_or_scm'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/extract_pipeline.rb:34:in `call'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/services/gitlab_ci/REDACTED.rb:45:in `block (3 levels) in pipelines_from_client'
+/usr/local/bundle/gems/actions_importer-1.3.22081/lib/valet/models/thread_collection.rb:8:in `block in perform_later'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:24:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `block in synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/synchronization/mutex_lockable_object.rb:48:in `synchronize'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/safe_task_executor.rb:22:in `execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/ivar.rb:170:in `safe_execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/future.rb:55:in `block in execute'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:352:in `run_task'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:343:in `block (3 levels) in create_worker'
+<internal:kernel>:187:in `loop'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:334:in `block (2 levels) in create_worker'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `catch'
+/usr/local/bundle/gems/concurrent-ruby-1.2.2/lib/concurrent-ruby/concurrent/executor/ruby_thread_pool_executor.rb:333:in `block in create_worker'
+D, [2024-07-30T12:19:41.130568 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'push'
+D, [2024-07-30T12:19:41.131095 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'merge_request'
+D, [2024-07-30T12:19:41.131556 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'manual'
+D, [2024-07-30T12:19:41.131995 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:41.132354 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:41.132649 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:41.132949 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:41.133235 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:41.157282 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.161490 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.162787 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.163411 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.164108 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.164255 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.164729 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.164837 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.165576 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.165771 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.166294 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.166414 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.166973 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.167137 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.167648 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.167758 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.167949 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.168020 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.168081 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.168143 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.168658 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.168794 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.168871 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.168932 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.168992 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.169062 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.170112 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.170256 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.170580 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.170656 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.171109 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.171216 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.171393 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.171457 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.171524 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.172065 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.172168 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.172325 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.172386 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.172429 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.172954 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.173055 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.173244 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.173316 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.173360 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.173883 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.173983 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.174140 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.174202 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.174263 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.174305 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.174827 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.174954 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.175119 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.178306 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.178394 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.178962 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.179081 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.179244 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.179306 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.179368 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.179429 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.179491 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.179535 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.180263 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.180376 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.180554 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.180618 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.180680 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.180742 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.180803 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.180846 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.181481 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.181592 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.181838 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.181949 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.182021 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.182926 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.184104 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.184322 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.184394 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.184443 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.185125 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.185245 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.185410 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.185473 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.185534 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.185594 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.185782 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.185842 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.185893 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.185928 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.186472 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.186553 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.186691 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.186742 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.186786 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.186817 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.187187 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.187258 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.187367 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.187423 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.187467 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.187497 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.188454 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.188548 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.188601 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.188711 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.188757 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.188799 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.188841 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.188883 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.188926 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.188957 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.189402 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.189480 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.189594 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.189637 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.189680 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.189722 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.189765 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.189795 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.190183 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.190253 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.190300 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.190407 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.190449 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.190491 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.190533 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.190564 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.190956 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.191026 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.191073 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.191190 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.191233 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.191263 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.191595 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.191657 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.191698 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192139 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192185 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192224 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.192251 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.192606 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.192677 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192777 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192816 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192854 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192892 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192934 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.192973 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.192999 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:41.193334 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.193403 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.194262 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.194316 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.194357 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.194395 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.194671 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.194737 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.194871 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.195194 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.195258 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.195372 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:41.197244 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.197317 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.197361 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.197592 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.197654 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'trigger'
+D, [2024-07-30T12:19:41.198017 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.198085 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.198522 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.198829 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.199097 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.199360 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.201581 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.201894 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.202188 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.202250 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.202295 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.202336 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.202374 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.202627 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.202689 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.202731 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.202772 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.202811 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.203068 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.203337 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.203605 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.203915 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.204396 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.204465 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.204509 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.204553 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.204592 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.204956 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.205025 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.205066 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.205106 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.205144 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.205422 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.205487 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.205895 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.205965 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.206215 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.206467 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.206729 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.206789 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.206831 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.206871 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.206910 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.206949 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.206987 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.207026 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.207376 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.207439 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.207482 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.207521 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.207807 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.207879 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.207930 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.207983 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.208021 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.208060 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'after_script'
+D, [2024-07-30T12:19:41.208101 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'after_script'
+D, [2024-07-30T12:19:41.208470 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.209611 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.209677 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.209733 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.209772 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.210187 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'after_script'
+D, [2024-07-30T12:19:41.210235 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'after_script'
+D, [2024-07-30T12:19:41.211321 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.211408 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.211460 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.211514 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.212314 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.212364 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'after_script'
+D, [2024-07-30T12:19:41.213132 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'after_script'
+D, [2024-07-30T12:19:41.214182 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.214286 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.214343 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.215234 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.215290 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.215330 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.216207 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.216297 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.216595 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.216669 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.216708 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.216748 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.216787 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.217778 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.218585 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.218650 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:41.219595 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.219650 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.219690 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.219728 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.221655 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.221758 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.221813 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.228629 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.229572 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.230409 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.230478 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:41.232708 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:41.232834 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:41.232893 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.704117 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'push'
+D, [2024-07-30T12:19:54.704857 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'merge_request'
+D, [2024-07-30T12:19:54.704994 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'manual'
+D, [2024-07-30T12:19:54.705050 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:54.705094 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:54.705137 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:54.708214 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.708346 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.708423 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.708515 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.708576 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.708630 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.708853 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.708939 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.708997 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.709081 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.709121 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.709392 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.709462 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.709531 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.709593 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.709630 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.709667 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.709736 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.709775 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.709828 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.709865 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.709904 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.710100 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.710196 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710263 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710312 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710350 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710387 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710425 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710461 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710501 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.710680 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.710740 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710792 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710840 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710878 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710936 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.710987 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711034 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711075 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.711280 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.711346 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711397 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711445 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711482 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711520 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711558 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711596 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711636 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.711822 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.711881 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711932 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.711981 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712018 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712055 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712091 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712128 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712168 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.712409 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.712469 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712521 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712571 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712609 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712646 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712684 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712721 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.712761 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.712941 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.713002 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713053 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713103 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713141 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713179 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713224 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713263 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713304 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.713489 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.713549 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713600 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713649 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713686 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713724 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713762 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713800 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.713840 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.714024 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.714085 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714137 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714185 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714223 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714266 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714303 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714341 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714381 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.714560 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.714620 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714670 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714719 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714756 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714793 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714830 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714900 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.714946 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.715196 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.715256 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.715308 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.715356 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.715394 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.715437 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.715476 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.715513 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.715552 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.716999 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.717272 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.717352 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.717408 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.717458 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.717496 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.717534 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.717572 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.717614 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.717654 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.717693 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.717881 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.717945 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.717997 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718046 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718084 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718122 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718160 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718198 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718240 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.718426 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.718509 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718639 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718690 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718728 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718766 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718804 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718843 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.718882 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.718921 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.719106 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.719177 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.719229 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.719278 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.719322 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.719360 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.719399 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.719437 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.719478 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.719661 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.719722 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.720414 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.720479 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.720519 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.720557 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.720654 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.720710 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.720751 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.720942 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.721012 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721064 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721112 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721150 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721186 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721223 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721260 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721300 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.721480 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.721542 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721593 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721642 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721679 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721717 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721754 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721792 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.721837 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.722023 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.722085 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722136 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722185 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722222 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722259 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722296 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722333 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722373 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.722550 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.722611 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722665 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722714 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722752 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722790 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722827 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722864 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.722905 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.723086 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.723154 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.723206 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.723256 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.723294 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.723332 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.723370 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.723408 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.724150 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.724226 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724281 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724332 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724369 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724407 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724444 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724481 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724525 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.724563 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.724750 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.724813 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724884 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724935 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.724973 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725010 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725046 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725083 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725121 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.725159 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.725343 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.725404 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725493 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725594 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725654 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725710 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725765 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725821 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.725883 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.726258 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.726462 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.726544 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.726595 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.726634 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.726670 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.726711 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.726748 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.726789 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.726984 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.727051 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.727104 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.727275 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.727351 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.727443 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.727491 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.727530 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.727974 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.728250 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.728326 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.728378 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.728430 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.728466 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.728503 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.728541 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.728579 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.728618 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.728888 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.728955 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729006 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729055 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729092 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729129 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729166 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729203 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729246 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.729427 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.729487 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729538 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729586 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729622 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729659 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729696 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729733 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.729772 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.729944 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.730005 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730056 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730107 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730152 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730190 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730227 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730264 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730303 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.730341 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.730379 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.730417 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.730600 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.730662 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730713 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730762 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730800 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730837 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.730875 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.731328 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.731376 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.731415 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.731452 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.731489 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.731660 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.731724 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.731779 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.731827 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.731864 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.731900 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:54.731938 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.731976 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.732013 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.732050 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.732218 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.732278 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:54.732434 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:54.732494 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.821287 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'push'
+D, [2024-07-30T12:19:57.821424 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'merge_request'
+D, [2024-07-30T12:19:57.821487 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'manual'
+D, [2024-07-30T12:19:57.858130 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'push'
+D, [2024-07-30T12:19:57.858287 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'merge_request'
+D, [2024-07-30T12:19:57.858372 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'manual'
+D, [2024-07-30T12:19:57.859676 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:57.859887 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:57.860014 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:57.860125 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.860375 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:57.860553 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:57.860665 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:57.860743 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.860982 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:57.861098 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:57.861169 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:57.861246 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.861466 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:57.861609 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:57.861701 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:57.861794 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.995356 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'push'
+D, [2024-07-30T12:19:57.995465 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'merge_request'
+D, [2024-07-30T12:19:57.995553 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'manual'
+D, [2024-07-30T12:19:57.996214 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:57.996380 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.996447 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.996511 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.996566 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.996626 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.996684 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:57.996908 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:57.997010 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:57.997093 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.997137 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.997191 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.997243 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.997308 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:57.997362 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:57.997441 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'pages'
+D, [2024-07-30T12:19:58.102682 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'push'
+D, [2024-07-30T12:19:58.103017 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'merge_request'
+D, [2024-07-30T12:19:58.103157 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'manual'
+D, [2024-07-30T12:19:58.103225 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:58.103286 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'schedule'
+D, [2024-07-30T12:19:58.104498 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.104614 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.104663 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.104704 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.104745 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:58.104775 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.dotenv'
+D, [2024-07-30T12:19:58.104990 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.105068 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.105123 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.105165 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.105204 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.105242 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.105284 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.105323 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.105361 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.105841 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.105922 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.105971 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106011 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106049 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106087 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106124 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106161 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106198 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106384 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.106453 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.106500 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106540 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106589 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106627 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106665 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106702 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106739 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.106920 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.106990 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.107036 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107075 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107113 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107150 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107189 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107246 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107515 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.107594 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.107643 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107683 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107742 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107799 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107898 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.107942 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.108114 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.108183 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.108230 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:58.108273 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.108312 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.108499 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.108569 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.108614 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:58.108656 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.980924 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'push'
+D, [2024-07-30T12:19:58.981066 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'merge_request'
+D, [2024-07-30T12:19:58.981155 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'manual'
+D, [2024-07-30T12:19:58.982027 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.982140 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:58.982190 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.982257 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.982313 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:58.982371 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:58.982517 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.982604 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.982672 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:58.982730 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.982784 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:58.982827 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:58.982943 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.983022 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.983084 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:58.983128 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.983168 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:58.983213 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:58.983378 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.983476 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.983538 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:58.983609 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:58.983663 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'artifacts'
+D, [2024-07-30T12:19:58.983705 #1] DEBUG -- : [Transformers::GitlabCI::Scripts::Artifacts]: Failed to locate transformer for 'artifacts.junit'
+D, [2024-07-30T12:19:58.983844 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:58.983936 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'dependencies'
+D, [2024-07-30T12:19:58.983990 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'trigger'
+D, [2024-07-30T12:19:59.101888 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'push'
+D, [2024-07-30T12:19:59.102014 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'merge_request'
+D, [2024-07-30T12:19:59.102098 #1] DEBUG -- : [Transformers::GitlabCI::On]: Located transformer for 'manual'
+D, [2024-07-30T12:19:59.102633 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'checkout'
+D, [2024-07-30T12:19:59.102779 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'before_script'
+D, [2024-07-30T12:19:59.102863 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+D, [2024-07-30T12:19:59.102935 #1] DEBUG -- : [Transformers::GitlabCI::Steps]: Located transformer for 'script'
+I, [2024-07-30T12:19:59.154338 #1]  INFO -- : Output file(s):
+I, [2024-07-30T12:20:00.305355 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+I, [2024-07-30T12:20:00.305956 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/.gitlabREDACTED.yml
+I, [2024-07-30T12:20:00.307067 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ci-github/config.json
+I, [2024-07-30T12:20:00.308323 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ci-github/source.yml
+I, [2024-07-30T12:20:00.310369 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/oneapi-construction-kit/error.txt
+I, [2024-07-30T12:20:00.311217 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/oneapi-construction-kit/config.json
+I, [2024-07-30T12:20:00.313311 #1]  INFO -- :   ComputeAorta/audit/webservices/acoran-for-risc-v-documentation/error.txt
+I, [2024-07-30T12:20:00.314682 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ci-experiments/error.txt
+I, [2024-07-30T12:20:00.576776 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+I, [2024-07-30T12:20:00.577888 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/config.json
+I, [2024-07-30T12:20:00.579774 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/source.yml
+I, [2024-07-30T12:20:00.584361 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+I, [2024-07-30T12:20:00.585639 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/CI/config.json
+I, [2024-07-30T12:20:00.586985 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/CI/source.yml
+I, [2024-07-30T12:20:00.588384 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/HAL/error.txt
+I, [2024-07-30T12:20:00.599008 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+I, [2024-07-30T12:20:00.600829 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/config.json
+I, [2024-07-30T12:20:00.602381 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/source.yml
+I, [2024-07-30T12:20:00.613577 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+I, [2024-07-30T12:20:00.616266 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/Handbook/config.json
+I, [2024-07-30T12:20:00.620929 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/Handbook/source.yml
+I, [2024-07-30T12:20:00.718708 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+I, [2024-07-30T12:20:00.720531 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ca-llvm/config.json
+I, [2024-07-30T12:20:00.722703 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ca-llvm/source.yml
+I, [2024-07-30T12:20:00.733446 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+I, [2024-07-30T12:20:00.735348 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/build_tools/config.json
+I, [2024-07-30T12:20:00.737279 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/build_tools/source.yml
+I, [2024-07-30T12:20:00.744620 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+I, [2024-07-30T12:20:00.747257 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/PerfCL/config.json
+I, [2024-07-30T12:20:00.749308 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/PerfCL/source.yml
+I, [2024-07-30T12:20:00.754588 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/VK/error.txt
+I, [2024-07-30T12:20:00.756994 #1]  INFO -- :   ComputeAorta/audit/ComputeAorta/ComputeAorta/error.txt
+I, [2024-07-30T12:20:00.761095 #1]  INFO -- :   ComputeAorta/audit/config.yml
+I, [2024-07-30T12:20:19.247820 #1]  INFO -- :   ComputeAorta/audit/workflow_usage.csv
+I, [2024-07-30T12:20:20.794237 #1]  INFO -- :   ComputeAorta/audit/audit_summary.md
+W, [2024-07-30T12:20:31.759141 #1]  WARN -- : Secrets redacted in file(s):
+W, [2024-07-30T12:20:31.760082 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+W, [2024-07-30T12:20:31.761193 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+W, [2024-07-30T12:20:31.761436 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/HAL/error.txt
+W, [2024-07-30T12:20:31.761741 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ComputeAorta/error.txt
+W, [2024-07-30T12:20:31.761996 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+W, [2024-07-30T12:20:31.762229 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/config.json
+W, [2024-07-30T12:20:31.762585 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/VK/error.txt
+W, [2024-07-30T12:20:31.763240 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/Handbook/config.json
+W, [2024-07-30T12:20:31.763436 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+W, [2024-07-30T12:20:31.763602 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/CI/config.json
+W, [2024-07-30T12:20:31.763799 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/build_tools/config.json
+W, [2024-07-30T12:20:31.763972 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/PerfCL/config.json
+W, [2024-07-30T12:20:31.764348 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+W, [2024-07-30T12:20:31.764560 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ci-experiments/error.txt
+W, [2024-07-30T12:20:31.764811 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+W, [2024-07-30T12:20:31.765094 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ca-llvm/source.yml
+W, [2024-07-30T12:20:31.765341 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/.gitlab-ci-nightly_pipeline.yml
+W, [2024-07-30T12:20:31.765642 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+W, [2024-07-30T12:20:31.765875 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ca-llvm/config.json
+W, [2024-07-30T12:20:31.766130 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/config.json
+W, [2024-07-30T12:20:31.766389 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/source.yml
+W, [2024-07-30T12:20:31.766583 #1]  WARN -- :   ComputeAorta/audit/config.yml
+W, [2024-07-30T12:20:31.766795 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/oneapi-construction-kit/error.txt
+W, [2024-07-30T12:20:31.767019 #1]  WARN -- :   ComputeAorta/audit/log/valet-20240730-121927.log
+W, [2024-07-30T12:20:31.767271 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/oneapi-construction-kit/config.json
+W, [2024-07-30T12:20:31.767445 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ci-github/config.json
+W, [2024-07-30T12:20:31.767616 #1]  WARN -- :   ComputeAorta/audit/webservices/acoran-for-risc-v-documentation/error.txt
+W, [2024-07-30T12:20:31.767733 #1]  WARN -- :   ComputeAorta/audit/workflow_usage.csv
+W, [2024-07-30T12:20:31.767850 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ci-github/source.yml
+W, [2024-07-30T12:20:31.767956 #1]  WARN -- :   ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+I, [2024-07-30T12:20:31.872913 #1]  INFO -- request: GET https://api.github.com/user
+I, [2024-07-30T12:20:32.129687 #1]  INFO -- response: Status 200
+I, [2024-07-30T12:20:32.135823 #1]  INFO -- : Sending telemetry with transaction id '16d375b0-8c10-4d38-8de6-3f8a8b018c1c'

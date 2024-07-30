@@ -1,0 +1,71 @@
+name: ComputeAorta/Handbook
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+env:
+  STORAGE_USER: "${{ secrets.STORAGE_USER }}"
+  STORAGE_PASS: "${{ secrets.STORAGE_PASS }}"
+  ZULIP_TOKEN: "${{ secrets.ZULIP_TOKEN }}"
+  ComputeAortaCL_TOKEN: "${{ secrets.ComputeAortaCL_TOKEN }}"
+  ComputeAortaCLVK_TOKEN: "${{ secrets.ComputeAortaCLVK_TOKEN }}"
+  SCCACHE_REDIS: redisREDACTED01.office.codeplay.com
+  OLD_CA_GITLAB_API_TOKEN: "${{ secrets.OLD_CA_GITLAB_API_TOKEN }}"
+  OLD_CA_GIT_WRITE_TOKEN: "${{ secrets.OLD_CA_GIT_WRITE_TOKEN }}"
+  CLICOLOR_FORCE: '1'
+  GTEST_COLOR: 'yes'
+  CA_GIT_WRITE_TOKEN: "${{ secrets.CA_GIT_WRITE_TOKEN }}"
+  CA_GITLAB_API_TOKEN: "${{ secrets.CA_GITLAB_API_TOKEN }}"
+  LLVM_GIT_WRITE_TOKEN: zrHPYsf6BVupQeYySmnH
+jobs:
+  handbook:
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == "merge_request_event"
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: pip install virtualenv
+    - run: virtualenv -p $(command -v python3) .local
+    - run: source .local/bin/activate
+    - run: pip install --no-cache-dir -r requirements.txt
+    - run: sphinx-build --color -W --keep-going -b html source public
+    - uses: actions/upload-artifact@v4.1.0
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        path: public/
+  pages:
+    needs: handbook
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.ref }} == $CI_DEFAULT_BRANCH
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: pip install virtualenv
+    - run: virtualenv -p $(command -v python3) .local
+    - run: source .local/bin/activate
+    - run: pip install --no-cache-dir -r requirements.txt
+    - run: sphinx-build --color -W --keep-going -b html source public
+    - uses: actions/upload-artifact@v4.1.0
+      if: success()
+      with:
+        name: "${{ github.job }}"
+        path: public/
+    - uses: JamesIves/github-pages-deploy-action@v4.5.0
+      with:
+        branch: gh-pages
+        folder: public

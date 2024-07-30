@@ -1,0 +1,234 @@
+---
+variables:
+  GIT_STRATEGY: clone
+  GIT_DEPTH: "3"
+  LLVM_REPO:
+    value: "git@git.office.codeplay.com:ComputeAorta/llvm-project.git"
+    description: "Location to checkout LLVM from."
+  LLVM_BRANCH:
+    value: "main"
+    description: "Git branch to check out."
+  SHAREDSTORAGE_NAME:
+    value: "main"
+    description: "Name to save in shared storage as; use this for downstream jobs."
+  DRY_RUN:
+    value: "TRUE"
+    description: "Don't push any artifacts, just attempt to build and verify the build was successful."
+    options: ["TRUE", "FALSE"]
+  PUSH_TAG:
+    value: "FALSE"
+    description: "After building the artifact, create and push a git tag to ComputeAorta/llvm-project."
+    options: ["TRUE", "FALSE"]
+  BUILD_LINUX_RISCV:
+    value: "TRUE"
+    description: "Build for Linux RISC-V."
+    options: ["TRUE", "FALSE"]
+  BUILD_LINUX_ARM:
+    value: "TRUE"
+    description: "Build for Linux ARM."
+    options: ["TRUE", "FALSE"]
+  BUILD_LINUX_X86:
+    value: "TRUE"
+    description: "Build for Linux x86/64."
+    options: ["TRUE", "FALSE"]
+  BUILD_WINDOWS_X86:
+    value: "TRUE"
+    description: "Build for Linux x86/64."
+    options: ["TRUE", "FALSE"]
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+stages:
+  - build
+  - push
+  - report
+
+default:
+  interruptible: true
+
+.base_job:
+  stage: build
+
+.linux_job:
+  stage: build
+  script:
+    - env
+    - if [ "$DRY_RUN" == "FALSE" ]; then export _PUSH=--push; fi
+    - git clone --branch $LLVM_BRANCH $LLVM_REPO llvm-project
+    - git -C llvm-project reset --hard $PASS_HASH
+    - git -C llvm-project log -1
+    - ls -lah llvm-project
+    - python3 -u scripts/build.py
+      --verbose
+      --build_type $BUILD_TYPE
+      --arch $ARCH
+      --llvm_branch $LLVM_BRANCH
+      --storage-name $SHAREDSTORAGE_NAME
+      --generator Ninja
+      -DLLVM_ENABLE_DIA_SDK=OFF
+      --clean
+      $_PUSH
+
+.windows_job:
+  stage: build
+  script:
+    - 'gci env:'
+    - if ( $DRY_RUN -eq "FALSE" ) { $_PUSH="--push" }
+    - git clone --branch $LLVM_BRANCH $LLVM_REPO llvm-project
+    - git -C llvm-project reset --hard $PASS_HASH
+    - git -C llvm-project log -1
+    - python -u scripts/build.py
+      --verbose
+      --build_type $BUILD_TYPE
+      --arch $ARCH
+      --llvm_branch $LLVM_BRANCH
+      --storage-name $SHAREDSTORAGE_NAME
+      --generator Ninja
+      -DLLVM_ENABLE_DIA_SDK=OFF
+      --clean
+      $_PUSH
+
+.base_matrix: &base_matrix
+  BUILD_TYPE: &build_types [Release, ReleaseAssert]
+
+# Keep the various machine / OS matrixes separate because changes to the build
+# matrix tend to get made on an ISA or OS level
+.arm:
+  parallel:
+    matrix:
+      - <<: *base_matrix
+        ARCH: [arm, arm64]
+
+.x86:
+  parallel:
+    matrix:
+      - <<: *base_matrix
+        ARCH: [x86, x86_64]
+
+.riscv:
+  parallel:
+    matrix:
+      - <<: *base_matrix
+        ARCH: [riscv64]
+
+.windows:
+  tags: [windows]
+  image: $CI_REGISTRY/computeaorta/ci/windows:10
+  parallel:
+    matrix:
+      - <<: *base_matrix
+        ARCH: [x86_64]
+
+.ubuntu20:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04
+
+# Determine the current LLVM commit once and save it in the environment
+# of dependent jobs (which is all of them). Do this once, rather than
+# during cloning, so that different jobs cannot pick up different commits.
+check-commit:
+  tags: [linux]
+  stage: .pre
+  extends: [.ubuntu20, .base_job, .linux_job]
+  script:
+    - remote=$(git ls-remote --exit-code -h $LLVM_REPO $LLVM_BRANCH) || exit $?
+    - set -- $remote
+    - echo "PASS_HASH=$1" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+
+# Now the actual build jobs...
+ubuntu20_x86:
+  rules:
+  - if: '$BUILD_LINUX_X86 == "TRUE"'
+  tags: [linux]
+  stage: build
+  extends: [.x86, .ubuntu20, .base_job, .linux_job]
+
+ubuntu20_arm:
+  rules:
+  - if: '$BUILD_LINUX_ARM == "TRUE"'
+  tags: [linux]
+  stage: build
+  extends: [.arm, .ubuntu20, .base_job, .linux_job]
+
+ubuntu20_riscv:
+  rules:
+  - if: '$BUILD_LINUX_RISCV == "TRUE"'
+  tags: [linux]
+  stage: build
+  extends: [.riscv, .ubuntu20, .base_job, .linux_job]
+
+windows:
+  rules:
+  - if: '$BUILD_WINDOWS_X86 == "TRUE"'
+  extends: [.windows, .base_job, .windows_job]
+  stage: build
+
+.notify_zulip_base:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04
+  variables:
+    ZULIP_PIPELINE_NAME: 'CA-LLVM'
+    ZULIP_STREAM: 'Orion'
+    ZULIP_TOPIC: 'GitLab CI'
+  before_script:
+    - 'PIPELINE_TOOK=$(
+       printf ''"%s"'' $CI_PIPELINE_CREATED_AT |
+        jq -r ''now - (sub("\\.\\d+Z$"; "Z") | fromdate) | gmtime |
+        .[2:6] | @text "\(.[0] -1) days \(.[1]) hours \(.[2]) mins"''
+      )'
+
+notify-zulip-fail:
+  extends: [.notify_zulip_base]
+  stage: report
+  when: on_failure
+  script:
+    - if [[ ! $PASS_HASH ]]; then export PASS_HASH="(unavailable)"; fi
+    - 'curl -X POST REDACTED1/messages
+      -u "computeaorta-gitlab-bot@chat.codeplay.com:$ZULIP_TOKEN"
+      --data-urlencode type=stream
+      --data-urlencode to="$ZULIP_STREAM"
+      --data-urlencode subject="$ZULIP_TOPIC"
+      --data-urlencode "content=:red: The
+        [$ZULIP_PIPELINE_NAME]($CI_PIPELINE_URL) pipeline for $CI_PROJECT_TITLE
+        (\`$LLVM_BRANCH\` -> \`$SHAREDSTORAGE_NAME\`) FAILED
+        (took $PIPELINE_TOOK).
+        Attempted to build \`$SHAREDSTORAGE_NAME\` LLVM for commit
+        \`$PASS_HASH\`."'
+
+notify-zulip-success:
+  extends: [.notify_zulip_base]
+  stage: report
+  rules:
+    - if: "$DRY_RUN == \"FALSE\""
+  script:
+    - 'curl -X POST REDACTED1/messages
+      -u "computeaorta-gitlab-bot@chat.codeplay.com:$ZULIP_TOKEN"
+      --data-urlencode type=stream
+      --data-urlencode to="$ZULIP_STREAM"
+      --data-urlencode subject="$ZULIP_TOPIC"
+      --data-urlencode "content=:green: The
+        [$ZULIP_PIPELINE_NAME]($CI_PIPELINE_URL) pipeline for $CI_PROJECT_TITLE
+        (\`$LLVM_BRANCH\` -> \`$SHAREDSTORAGE_NAME\`) succeeded
+        (took $PIPELINE_TOOK).
+        The new commit hash for the tag \`$SHAREDSTORAGE_NAME\` is now
+        \`$PASS_HASH\`."'
+
+tag-commit:
+  tags: [linux]
+  image: $CI_REGISTRY/computeaorta/ci/ubuntu:20.04
+  stage: push
+  rules:
+    - if: "$PUSH_TAG == \"TRUE\""
+  script:
+    - git clone --branch $LLVM_BRANCH REDACTED2:$LLVM_GIT_WRITE_TOKEN@git.office.codeplay.com/ComputeAorta/llvm-project.git llvm-project
+    - git -C llvm-project checkout $PASS_HASH
+    - git -C llvm-project config user.name "Gitlab CI"
+    - git -C llvm-project config user.email "nosuchemail@codeplay.invalid"
+    - 'git -C llvm-project tag -f -a build_$SHAREDSTORAGE_NAME -m "Automatic tag for llvm-ca Gitlab CI build #$CI_BUILD_ID."'
+    - git -C llvm-project push -f origin build_$SHAREDSTORAGE_NAME

@@ -1,0 +1,2195 @@
+name: ComputeAorta/ecosystem-test-scripts
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+  - cron: 30 19 * * 5
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+env:
+  COMPUTECPP_DISTRIBUTION: REDACTED
+  STORAGE_USER: "${{ secrets.STORAGE_USER }}"
+  STORAGE_PASS: "${{ secrets.STORAGE_PASS }}"
+  ZULIP_TOKEN: "${{ secrets.ZULIP_TOKEN }}"
+  ComputeAortaCL_TOKEN: "${{ secrets.ComputeAortaCL_TOKEN }}"
+  ComputeAortaCLVK_TOKEN: "${{ secrets.ComputeAortaCLVK_TOKEN }}"
+  SCCACHE_REDIS: redisREDACTED01.office.codeplay.com
+  OLD_CA_GITLAB_API_TOKEN: "${{ secrets.OLD_CA_GITLAB_API_TOKEN }}"
+  OLD_CA_GIT_WRITE_TOKEN: "${{ secrets.OLD_CA_GIT_WRITE_TOKEN }}"
+  CLICOLOR_FORCE: '1'
+  GTEST_COLOR: 'yes'
+  CA_GIT_WRITE_TOKEN: "${{ secrets.CA_GIT_WRITE_TOKEN }}"
+  CA_GITLAB_API_TOKEN: "${{ secrets.CA_GITLAB_API_TOKEN }}"
+  LLVM_GIT_WRITE_TOKEN: zrHPYsf6BVupQeYySmnH
+jobs:
+  docker:
+    runs-on:
+      - self-hosted
+      - linux-docker-images
+    if: github.event_type == 'pull_request'
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: docker info
+    - run: docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - run: docker build --file=./Dockerfile --tag=computeaorta/ecosystem-test-scripts/ubuntu:20.04 --build-arg CI_JOB_TOKEN="${{ github.token }}" .
+    - run: docker tag computeaorta/ecosystem-test-scripts/ubuntu:20.04 $CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04
+    - run: docker push $CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04
+  build-artefact:
+    needs: docker
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: !(${{ github.event_name }} == "merge_request_event") || !($MUX_TARGET != "host") || ${{ github.event_name }} != "push" && $BUILD_CA_ARTEFACT != "FALSE"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/build.py -G Ninja --build_type ReleaseAssert --source_dir oneapi-construction-kit --binary_dir build --artefact_name $LLVM_VERSION --define CA_CL_ENABLE_ICD_LOADER=ON --define CA_ENABLE_HOST_IMAGE_SUPPORT=ON --define OCL_EXTENSION_cl_intel_unified_shared_memory=ON
+    - run: python -u ci-github/scripts/storage.py push artefact.ecosystem_ocl --path ${PWD}/build/install
+  tensorflow:
+    needs: build-artefact
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    continue-on-error: true
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run:
+        "!reference":
+        - ".tensorflow-artefact"
+        - script
+    - run: "./scripts/test-tensorflow.sh"
+  babelstream:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-babelstream.sh"
+  boost-compute:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-boost-compute.sh"
+  clblas:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-clblas.sh"
+  clblast:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-clblast.sh"
+  clgpu:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-clgpu.sh"
+  cloverleaf:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-cloverleaf.sh"
+  clrng:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-clrng.sh"
+  clsparse:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-clsparse.sh"
+  computeapps:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-computeapps.sh"
+  computecpp-sdk-spirv:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run: "./scripts/test-computecpp-sdk-spirv.sh"
+  eigen:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run: "./scripts/test-eigen.sh"
+  glow:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-glow.sh"
+  halide:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run:
+        "!reference":
+        - ".llvm-artefact"
+        - script
+    - run: "./scripts/test-halide.sh"
+  iree:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-iree.sh"
+  opencl-book-samples:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-opencl-book-samples.sh"
+  opencv:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-opencv.sh"
+  piglit:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-piglit.sh"
+  pyopencl:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-pyopencl.sh"
+  perfcl:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-perfcl.sh"
+  soyuz-vgg:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || $PROJECT == "All" && $MUX_TARGET == "riscv"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/build.py -G Ninja --build_type ReleaseAssert --source_dir oneapi-construction-kit --binary_dir buildCARISCV --target install --artefact_name $LLVM_VERSION --define CA_ENABLE_HOST_IMAGE_SUPPORT=OFF --define CA_ENABLE_API=cl --define CA_CL_ENABLE_ICD_LOADER=ON --define CA_MUX_TARGETS_TO_ENABLE="riscv" --define CA_RISCV_ENABLED=ON
+    - run: export OCL_ICD_FILENAMES=${PWD}/buildCARISCV/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/buildCARISCV/lib/libOpenCL.so
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run: "./scripts/test-soyuz-vgg.sh"
+  sycl-blas:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run: "./scripts/test-sycl-blas.sh"
+  sycl-dnn:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run: "./scripts/test-sycl-dnn.sh"
+  tvm:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-tvm.sh"
+  vexcl:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-vexcl.sh"
+  viennacl:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-viennacl.sh"
+  arrayfire:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-arrayfire.sh"
+  beignet:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-beignet.sh"
+  clfft:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !((${{ github.event_name }} != "web" && ${{ github.event_name }} != "schedule")) || !($PROJECT != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run: "./scripts/test-clfft.sh"
+  single-project:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !($PROJECT == "All") || !($CONFIG == "All") || !($MUX_TARGET != "host") || $CONFIG == "Vanilla" || $CONFIG == "VECZ" || $CONFIG == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run:
+        "!reference":
+        - ".llvm-artefact"
+        - script
+    - run:
+        "!reference":
+        - ".tensorflow-artefact"
+        - script
+    - run: "./scripts/test-$PROJECT.sh"
+  single-project-matrix:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !($PROJECT == "All") || !($CONFIG != "All") || !($MUX_TARGET != "host") || ${{ matrix.MATRIX_CONFIG }} == "Vanilla" || ${{ matrix.MATRIX_CONFIG }} == "VECZ" || ${{ matrix.MATRIX_CONFIG }} == "BOSCC"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    strategy:
+      matrix:
+        MATRIX_CONFIG:
+        - Vanilla
+        - VECZ
+        - BOSCC
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/storage.py pull artefact.ecosystem_ocl
+    - run: export LD_LIBRARY_PATH=${PWD}/ecosystem_ocl/lib/
+    - run: export OCL_ICD_FILENAMES=${PWD}/ecosystem_ocl/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/ecosystem_ocl/lib/libOpenCL.so
+    - run: export VK_ICD_FILENAMES=${PWD}/ecosystem_ocl/share/vulkan/icd.d/VK.json
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run:
+        "!reference":
+        - ".llvm-artefact"
+        - script
+    - run:
+        "!reference":
+        - ".tensorflow-artefact"
+        - script
+    - run: "./scripts/test-$PROJECT.sh"
+  single-riscv-project:
+    needs: tensorflow
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ecosystem-test-scripts/ubuntu:20.04"
+    if: !($PROJECT == "All") || $MUX_TARGET == "riscv"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: echo cloning "REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b ${CA_BRANCH}"
+    - run: git clone REDACTED${GITHUB_USER}/oneapi-construction-kit.git -b "${CA_BRANCH}"
+    - run: git -C oneapi-construction-kit log -1
+    - run: echo cloning "git@git.office.codeplay.com:ComputeAorta/ci-github.git (for scripts)"
+    - run: git clone git@git.office.codeplay.com:ComputeAorta/ci-github.git
+    - run: git -C ci-github log -1
+    - run: python -u ci-github/scripts/build.py -G Ninja --build_type ReleaseAssert --source_dir oneapi-construction-kit --binary_dir buildCARISCV --target install --artefact_name $LLVM_VERSION --define CA_ENABLE_HOST_IMAGE_SUPPORT=OFF --define CA_ENABLE_API=cl --define CA_CL_ENABLE_ICD_LOADER=ON --define CA_MUX_TARGETS_TO_ENABLE="riscv" --define CA_RISCV_ENABLED=ON
+    - run: export OCL_ICD_FILENAMES=${PWD}/buildCARISCV/lib/libCL.so
+    - run: export OCL_ICD_LOADER=${PWD}/buildCARISCV/lib/libOpenCL.so
+    - run:
+        "!reference":
+        - ".computecpp-artefact"
+        - script
+    - run:
+        "!reference":
+        - ".llvm-artefact"
+        - script
+    - run:
+        "!reference":
+        - ".tensorflow-artefact"
+        - script
+    - run: "./scripts/test-$PROJECT.sh"
+  notify-pass:
+    needs:
+    - babelstream
+    - boost-compute
+    - clblas
+    - clblast
+    - clgpu
+    - cloverleaf
+    - clrng
+    - clsparse
+    - computeapps
+    - computecpp-sdk-spirv
+    - eigen
+    - glow
+    - halide
+    - iree
+    - opencl-book-samples
+    - opencv
+    - piglit
+    - pyopencl
+    - perfcl
+    - soyuz-vgg
+    - sycl-blas
+    - sycl-dnn
+    - tvm
+    - vexcl
+    - viennacl
+    - arrayfire
+    - beignet
+    - clfft
+    - single-project
+    - single-project-matrix
+    - single-riscv-project
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: !(${{ github.event_name }} == "push") || !($MUX_TARGET != "host") || (success() && ${{ github.event_name }} == "schedule")
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: 'curl -X POST REDACTED1/messages -u "computeaorta-gitlab-bot@chat.codeplay.com:$ZULIP_TOKEN" --data-urlencode "type=stream" --data-urlencode "to=Orion" --data-urlencode "subject=GitLab CI" --data-urlencode "content=:green: The [${MUX_TARGET} ecosystem project](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) pipeline started at ${CI_JOB_STARTED_AT} passed!"'
+  notify-fail:
+    needs:
+    - babelstream
+    - boost-compute
+    - clblas
+    - clblast
+    - clgpu
+    - cloverleaf
+    - clrng
+    - clsparse
+    - computeapps
+    - computecpp-sdk-spirv
+    - eigen
+    - glow
+    - halide
+    - iree
+    - opencl-book-samples
+    - opencv
+    - piglit
+    - pyopencl
+    - perfcl
+    - soyuz-vgg
+    - sycl-blas
+    - sycl-dnn
+    - tvm
+    - vexcl
+    - viennacl
+    - arrayfire
+    - beignet
+    - clfft
+    - single-project
+    - single-project-matrix
+    - single-riscv-project
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: # Unable to map conditional expression to GitHub Actions equivalent
+#         !(${{ github.event_name }} == "push") || ${{ github.event_name }} == "schedule"
+    timeout-minutes: 960
+    env:
+      PROJECT:
+        value: All
+        description: Specify a project to run, lower case project name or "All".
+      LLVM_VERSION:
+        value: release_160
+        description: LLVM branch to pull CA and LLVM artefact for.
+      CONFIG:
+        value: All
+        description: Additional OpenCL compiler flags to test with. One of Vanilla, VECZ, BOSCC or All.
+      GITHUB_USER:
+        value: codeplaysoftware
+        description: oneAPI Construction Kit GitHub user from which to clone OCK.
+      CA_BRANCH:
+        value: main
+        description: oneAPI Construction Kit branch to build and test with.
+      BUILD_CA_ARTEFACT:
+        value: 'TRUE'
+        description: Whether to build a fresh CA artefact for this run, TRUE or FALSE.
+      COMPUTECPP_VERSION:
+        value: 2.10.0
+        description: ComputeCpp version to test with SYCL projects.
+      COMPUTECPP_CUSTOM_RELEASE:
+        value: ''
+        description: Distribution URL for a custom ComputeCpp release to test, e.g. a release candidate.
+      MUX_TARGET:
+        value: host
+        description: oneAPI Construction Kit mux target to test, one of "host", "riscv" (with spike).
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: 50
+        lfs: true
+    - run: 'curl -X POST REDACTED1/messages -u "computeaorta-gitlab-bot@chat.codeplay.com:$ZULIP_TOKEN" --data-urlencode "type=stream" --data-urlencode "to=Orion" --data-urlencode "subject=GitLab CI" --data-urlencode "content=:red: The [${MUX_TARGET} ecosystem project](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) pipeline started at ${CI_JOB_STARTED_AT} failed."'

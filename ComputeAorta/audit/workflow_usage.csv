@@ -1,0 +1,93 @@
+Pipeline,Action,File path
+ComputeAorta/ci-github,actions/checkout@v4.1.0,ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,actions/upload-artifact@v4.1.0,ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,actions/download-artifact@v4.1.0,ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,./.github/workflows/.gitlabREDACTED.yml,ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ecosystem-test-scripts,actions/checkout@v4.1.0,ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/CA-OpenCL-CTS,actions/checkout@v4.1.0,ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/Handbook,actions/checkout@v4.1.0,ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,actions/upload-artifact@v4.1.0,ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,actions/download-artifact@v4.1.0,ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,JamesIves/github-pages-deploy-action@v4.5.0,ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/ca-llvm,actions/checkout@v4.1.0,ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,actions/download-artifact@v4.1.0,ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/build_tools,actions/checkout@v4.1.0,ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,actions/download-artifact@v4.1.0,ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/PerfCL,actions/checkout@v4.1.0,ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+
+Pipeline,Secret,File path
+ComputeAorta/ci-github,${{ secrets.STORAGE_USER }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,${{ secrets.STORAGE_PASS }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,${{ secrets.ZULIP_TOKEN }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,${{ secrets.ComputeAortaCL_TOKEN }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,${{ secrets.ComputeAortaCLVK_TOKEN }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,${{ secrets.OLD_CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,${{ secrets.OLD_CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,${{ secrets.CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ci-github,${{ secrets.CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/ci-github/.github/workflows/ci-github.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.STORAGE_USER }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.STORAGE_PASS }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.ZULIP_TOKEN }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.ComputeAortaCL_TOKEN }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.ComputeAortaCLVK_TOKEN }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.OLD_CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.OLD_CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/ecosystem-test-scripts,${{ secrets.CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml
+ComputeAorta/CI,${{ secrets.STORAGE_USER }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CI,${{ secrets.STORAGE_PASS }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CI,${{ secrets.ZULIP_TOKEN }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CI,${{ secrets.ComputeAortaCL_TOKEN }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CI,${{ secrets.ComputeAortaCLVK_TOKEN }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CI,${{ secrets.OLD_CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CI,${{ secrets.OLD_CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CI,${{ secrets.CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CI,${{ secrets.CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/CI/.github/workflows/ci.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.STORAGE_USER }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.STORAGE_PASS }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.ZULIP_TOKEN }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.ComputeAortaCL_TOKEN }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.ComputeAortaCLVK_TOKEN }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.OLD_CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.OLD_CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/CA-OpenCL-CTS,${{ secrets.CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/CA-OpenCL-CTS/.github/workflows/ca-opencl-cts.yml
+ComputeAorta/Handbook,${{ secrets.STORAGE_USER }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,${{ secrets.STORAGE_PASS }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,${{ secrets.ZULIP_TOKEN }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,${{ secrets.ComputeAortaCL_TOKEN }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,${{ secrets.ComputeAortaCLVK_TOKEN }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,${{ secrets.OLD_CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,${{ secrets.OLD_CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,${{ secrets.CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/Handbook,${{ secrets.CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/Handbook/.github/workflows/handbook.yml
+ComputeAorta/ca-llvm,${{ secrets.STORAGE_USER }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,${{ secrets.STORAGE_PASS }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,${{ secrets.ZULIP_TOKEN }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,${{ secrets.ComputeAortaCL_TOKEN }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,${{ secrets.ComputeAortaCLVK_TOKEN }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,${{ secrets.OLD_CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,${{ secrets.OLD_CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,${{ secrets.CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/ca-llvm,${{ secrets.CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/ca-llvm/.github/workflows/ca-llvm.yml
+ComputeAorta/build_tools,${{ secrets.STORAGE_USER }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,${{ secrets.STORAGE_PASS }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,${{ secrets.ZULIP_TOKEN }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,${{ secrets.ComputeAortaCL_TOKEN }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,${{ secrets.ComputeAortaCLVK_TOKEN }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,${{ secrets.OLD_CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,${{ secrets.OLD_CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,${{ secrets.CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/build_tools,${{ secrets.CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/build_tools/.github/workflows/build_tools.yml
+ComputeAorta/PerfCL,${{ secrets.STORAGE_USER }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+ComputeAorta/PerfCL,${{ secrets.STORAGE_PASS }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+ComputeAorta/PerfCL,${{ secrets.ZULIP_TOKEN }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+ComputeAorta/PerfCL,${{ secrets.ComputeAortaCL_TOKEN }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+ComputeAorta/PerfCL,${{ secrets.ComputeAortaCLVK_TOKEN }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+ComputeAorta/PerfCL,${{ secrets.OLD_CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+ComputeAorta/PerfCL,${{ secrets.OLD_CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+ComputeAorta/PerfCL,${{ secrets.CA_GIT_WRITE_TOKEN }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+ComputeAorta/PerfCL,${{ secrets.CA_GITLAB_API_TOKEN }},ComputeAorta/audit/ComputeAorta/PerfCL/.github/workflows/perfcl.yml
+
+Pipeline,Runner,File path
+ComputeAorta/ecosystem-test-scripts,linux-docker-images,ComputeAorta/audit/ComputeAorta/ecosystem-test-scripts/.github/workflows/ecosystem-test-scripts.yml

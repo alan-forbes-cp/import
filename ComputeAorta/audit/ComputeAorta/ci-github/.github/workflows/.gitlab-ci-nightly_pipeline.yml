@@ -1,0 +1,1034 @@
+# Environment variables defined in a calling workflow are not accessible to this reusable workflow. Refer to the documentation for further details on this limitation.
+name: .gitlabREDACTED
+on:
+  workflow_call:
+jobs:
+  env-info:
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - run: 'echo "Building: $NIGHTLY_LLVM_PREVIOUS / $NIGHTLY_LLVM_LATEST"'
+    - run: env
+  ca_trigger_llvm:
+    needs: env-info
+    runs-on: ubuntu-latest
+    if: $NIGHTLY_RUN_BUILD_LLVM == "1"
+    timeout-minutes: 3600
+    env:
+      LLVM_BRANCH: "$NIGHTLY_BUILD_LLVM_BRANCHNAME"
+      SHAREDSTORAGE_NAME: "$NIGHTLY_LLVM_LATEST"
+      DRY_RUN: 'FALSE'
+      PUSH_TAG: 'TRUE'
+    steps:
+    - uses: actions/checkout@v4.1.0
+    - name: Run downstream workflow
+      run: gh workflow run $WORKFLOW_FILE --repo ComputeAorta/ca-llvm
+      env:
+        WORKFLOW_FILE: UPDATE_ME
+        GH_TOKEN: "${{ github.token }}"
+  ca_meta_requires_llvm:
+    needs: env-info
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_BUILD_LLVM == "1" || "1" == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - run: echo "LLVM is go"
+  build-native:
+    needs: ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_LINUX_HOST == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+        ARCH:
+        - x86
+        - x86_64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  build-windows:
+    needs: ca_meta_requires_llvm
+    runs-on: windows-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/windows:10-x86_64"
+    if: $NIGHTLY_RUN_WINDOWS_HOST == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Windows
+      BUILD_ID: "${{ github.workflow }}"
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+        ARCH:
+        - x86_64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  build-host-aarch64-linux:
+    needs: ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_ARM_CROSS_HOST == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+        ARCH:
+        - arm
+        - arm64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  build-host-riscv64-linux:
+    needs: ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_RISCV_CROSS_HOST == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+        ARCH: riscv64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  build-refsi-riscv-g1:
+    needs: ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_LINUX_RISCV == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+      HAL_REFSI_SOC: G1
+      HAL_REFSI_THREAD_MODE: WG
+      HAL_DESCRIPTION: RV64GCVZbc_Zfh
+    strategy:
+      matrix:
+        ARCH:
+        - x86_64
+        BUILD_TYPE:
+        - Release
+        CA_HAL_NAME:
+        - refsi
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_LATEST"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  build-refsi-riscv-m1:
+    needs: ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_LINUX_RISCV == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+      HAL_REFSI_SOC: M1
+      HAL_REFSI_THREAD_MODE: WG
+      MUX_COMPILERS_TO_ENABLE: refsi_m1
+    strategy:
+      matrix:
+        ARCH:
+        - x86_64
+        BUILD_TYPE:
+        - Release
+        CA_HAL_NAME:
+        - refsi
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_LATEST"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  build-offline-linux:
+    needs: build-native
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_LINUX_HOST == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      ARTEFACT_CHECKOUT_PATH: "${{ github.workspace }}/archive"
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+        ARCH:
+        - x86
+        - x86_64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - run:
+        "!reference":
+        - ".clone_ock"
+        - script
+    - run:
+        "!reference":
+        - ".pull_build_linux_release"
+        - script
+    - run:
+        "!reference":
+        - ".clone_ock"
+        - script
+    - run: python -u scripts/build.py --verbose --build_type ${{ matrix.BUILD_TYPE }} --arch ${{ matrix.ARCH }} --generator Ninja --clean --define CA_CL_ENABLE_ICD_LOADER=ON --target check-ock --external_clc $ARTEFACT_CHECKOUT_PATH/bin/clc --offline_only -DOCL_EXTENSION_cl_khr_command_buffer=ON -DOCL_EXTENSION_cl_khr_command_buffer_mutable_dispatch=ON
+  build-offline-windows:
+    needs: build-windows
+    runs-on: windows-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/windows:10-x86_64"
+    if: ${{ matrix.ARCH }} != "x86" && ${{ matrix.BUILD_TYPE }} !~ /Debug/ && $NIGHTLY_RUN_WINDOWS_HOST == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Windows
+      ARTEFACT_CHECKOUT_PATH: "${{ github.workspace }}/archive"
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+        ARCH:
+        - x86_64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - run:
+        "!reference":
+        - ".clone_ock_windows"
+        - script
+    - run: python -u scripts/storage.py pull artefact.ocl Windows10 ${{ matrix.ARCH }} ${{ matrix.LLVM_BRANCH }} Release --verbose --clean --path $ARTEFACT_CHECKOUT_PATH --build_id ${{ github.workflow }}
+    - run: source/cl/tools/icd-register.ps1 "$env:CI_PROJECT_DIR/oneapi-construction-kit/build/bin/CL.dll"
+    - run: python -u scripts/build.py --verbose --build_type ${{ matrix.BUILD_TYPE }} --arch ${{ matrix.ARCH }} --generator Ninja --compiler vs2019 --clean --define CA_CL_ENABLE_ICD_LOADER=ON --target check-ock --external_clc $ARTEFACT_CHECKOUT_PATH/bin/clc.exe --offline_only -DOCL_EXTENSION_cl_khr_command_buffer=ON -DOCL_EXTENSION_cl_khr_command_buffer_mutable_dispatch=ON
+  test-aubsan:
+    needs: ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_SANITIZERS == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+      CLC_BUILD_ID: "${{ github.workflow }}"
+    strategy:
+      matrix:
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  test-tsan:
+    needs: ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_SANITIZERS == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+      CLC_BUILD_ID: "${{ github.workflow }}"
+    strategy:
+      matrix:
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  test-aubsan-offline:
+    needs:
+    - build-native
+    - ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_SANITIZERS == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+      CLC_BUILD_ID: "${{ github.workflow }}"
+    strategy:
+      matrix:
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  test-tsan-offline:
+    needs:
+    - build-native
+    - ca_meta_requires_llvm
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_SANITIZERS == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      BUILD_ID: "${{ github.workflow }}"
+      CLC_BUILD_ID: "${{ github.workflow }}"
+    strategy:
+      matrix:
+        LLVM_BRANCH:
+        - "$NIGHTLY_LLVM_PREVIOUS"
+        - "$NIGHTLY_LLVM_LATEST"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  test-unitcl-host-aarch64-linux:
+    needs: build-host-aarch64-linux
+    runs-on:
+      - self-hosted
+      - arm64
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-arm64"
+    if: $NIGHTLY_RUN_ARM_CROSS_HOST == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      ARTEFACT_CHECKOUT_PATH: "${{ github.workspace }}/CA"
+      ARCH: arm64
+      BUILD_TYPE: Release
+      LLVM_BRANCH: "$NIGHTLY_LLVM_PREVIOUS"
+      CA_INSTALL_DIR: "$ARTEFACT_CHECKOUT_PATH"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - run:
+        "!reference":
+        - ".clone_ock"
+        - script
+    - run:
+        "!reference":
+        - ".pull_build_linux_release"
+        - script
+    - run: cd $ARTEFACT_CHECKOUT_PATH
+    - run: OCL_ICD_FILENAMES=$PWD/lib/libCL.so OCL_ICD_VENDORS=/dev/null ./bin/UnitCL --gtest_output=xml:build/UnitCL.xml --gtest_filter=-Execution/Weak*Single*/*OpenCLC
+  test-unitcl-host-riscv64-linux:
+    needs: build-host-riscv64-linux
+    runs-on:
+      - self-hosted
+      - dev-linux
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:24.04-x86_64"
+    if: $NIGHTLY_RUN_RISCV_CROSS_HOST == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu24
+      ARTEFACT_CHECKOUT_PATH: "${{ github.workspace }}/CA"
+      ARCH: riscv64
+      BUILD_TYPE: Release
+      LLVM_BRANCH: "$NIGHTLY_LLVM_PREVIOUS"
+      CA_INSTALL_DIR: "$ARTEFACT_CHECKOUT_PATH"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - run:
+        "!reference":
+        - ".clone_ock"
+        - script
+    - run:
+        "!reference":
+        - ".pull_build_linux_release"
+        - script
+    - run: cd $ARTEFACT_CHECKOUT_PATH
+    - run: OCL_ICD_FILENAMES=$PWD/lib/libCL.so OCL_ICD_VENDORS=/dev/null qemu-riscv64 -L /usr/riscv64-linux-gnu bin/UnitCL --gtest_output=xml:build/UnitCL.xml
+  test-unitcl-refsi-riscv-g1:
+    needs: build-refsi-riscv-g1
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_LINUX_RISCV == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+    strategy:
+      matrix:
+        CA_RISCV_VF:
+        - 1,S
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - uses: actions/download-artifact@v4.1.0
+      with:
+        name: build-refsi-riscv-g1
+  test-unitcl-refsi-riscv-m1:
+    needs: build-refsi-riscv-m1
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_RUN_LINUX_RISCV == "1"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+    strategy:
+      matrix:
+        CA_RISCV_VF:
+        - '4'
+        - 1,S
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - uses: actions/download-artifact@v4.1.0
+      with:
+        name: build-refsi-riscv-m1
+  notify-zulip-fail:
+    needs:
+    - ca_trigger_llvm
+    - ca_meta_requires_llvm
+    - build-native
+    - build-windows
+    - build-host-aarch64-linux
+    - build-host-riscv64-linux
+    - build-refsi-riscv-g1
+    - build-refsi-riscv-m1
+    runs-on: ubuntu-latest
+    if: failure()
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      ZULIP_PIPELINE_NAME: nightly pipeline
+      ZULIP_STATUS_BADGE: ":red:"
+      ZULIP_STATUS: failed
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  notify-zulip-success:
+    needs:
+    - ca_trigger_llvm
+    - ca_meta_requires_llvm
+    - build-native
+    - build-windows
+    - build-host-aarch64-linux
+    - build-host-riscv64-linux
+    - build-refsi-riscv-g1
+    - build-refsi-riscv-m1
+    runs-on: ubuntu-latest
+    if: success()
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      ZULIP_PIPELINE_NAME: nightly pipeline
+      ZULIP_STATUS_BADGE: ":green:"
+      ZULIP_STATUS: passed
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+  merge-to-stable:
+    needs:
+    - build-offline-linux
+    - build-offline-windows
+    - test-aubsan
+    - test-tsan
+    - test-aubsan-offline
+    - test-tsan-offline
+    - test-unitcl-host-aarch64-linux
+    - test-unitcl-host-riscv64-linux
+    - test-unitcl-refsi-riscv-g1
+    - test-unitcl-refsi-riscv-m1
+    - notify-zulip-fail
+    - notify-zulip-success
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_OCK_BRANCH == "main" && $NIGHTLY_MERGE_TO_STABLE == "true"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '0'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+      ARTEFACT_CHECKOUT_PATH: "${{ github.workspace }}/archive"
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '0'
+    - run:
+        "!reference":
+        - ".clone_ock"
+        - script
+    - run: git pull --unshallow
+    - run: git remote add origin-write REDACTED2:$CA_GIT_WRITE_TOKEN@git.office.codeplay.com/ComputeAorta/oneapi-construction-kit.git
+    - run: git fetch origin-write stable
+    - run: git checkout -b stable origin-write/stable
+    - run: git merge --ff-only main
+    - run: git push origin-write stable
+  publish-docs:
+    needs: merge-to-stable
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04-x86_64"
+    if: $NIGHTLY_OCK_BRANCH == "main" && $NIGHTLY_MERGE_TO_STABLE == "true"
+    timeout-minutes: 3600
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      NIGHTLY_CA_CTS_TYPE_X86: wimpy
+      NIGHTLY_CA_CTS_TYPE_ARM: wimpy
+      NIGHTLY_CA_CTS_TYPE_RISCV: wimpy
+      NIGHTLY_OCK_BRANCH: main
+      NIGHTLY_LLVM_LATEST: release_170
+      NIGHTLY_LLVM_PREVIOUS: release_160
+      NIGHTLY_GITHUB_USER: codeplaysoftware
+      NIGHTLY_MERGE_TO_STABLE: 'false'
+      NIGHTLY_CA_HAVE_NATIVE_AARCH64: 'false'
+      NIGHTLY_RUN_WEIRD_PIPELINE: '1'
+      NIGHTLY_RUN_WINDOWS_HOST: '1'
+      NIGHTLY_RUN_ARM_CROSS_HOST: '1'
+      NIGHTLY_RUN_LINUX_HOST: '1'
+      NIGHTLY_RUN_LINUX_RISCV: '1'
+      NIGHTLY_RUN_SANITIZERS: '1'
+      NIGHTLY_RUN_BUILD_LLVM: '0'
+      NIGHTLY_BUILD_LLVM_CALLVM_BRANCH: develop
+      NIGHTLY_BUILD_LLVM_BRANCHNAME: main
+      NIGHTLY_RUN_TIDY: '1'
+      NIGHTLY_SEND_ZULIP: '0'
+      PLATFORM: Ubuntu20
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+    - run:
+        "!reference":
+        - ".clone_ock"
+        - script
+    - run: python -u scripts/build.py --verbose --artefact_name "$NIGHTLY_LLVM_PREVIOUS" --generator Ninja --clean --target doc_html
+    - run: python -u scripts/storage-publish.py --doc ComputeAorta build/doc/html REDACTED

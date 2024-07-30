@@ -1,0 +1,593 @@
+name: ComputeAorta/ca-llvm
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+  - cron: 0 7 * * 2,4
+  - cron: 0 7 * * *
+concurrency:
+  group: "${{ github.ref }}"
+  cancel-in-progress: true
+env:
+  STORAGE_USER: "${{ secrets.STORAGE_USER }}"
+  STORAGE_PASS: "${{ secrets.STORAGE_PASS }}"
+  ZULIP_TOKEN: "${{ secrets.ZULIP_TOKEN }}"
+  ComputeAortaCL_TOKEN: "${{ secrets.ComputeAortaCL_TOKEN }}"
+  ComputeAortaCLVK_TOKEN: "${{ secrets.ComputeAortaCLVK_TOKEN }}"
+  SCCACHE_REDIS: redis://buildcache01.office.codeplay.com
+  OLD_CA_GITLAB_API_TOKEN: "${{ secrets.OLD_CA_GITLAB_API_TOKEN }}"
+  OLD_CA_GIT_WRITE_TOKEN: "${{ secrets.OLD_CA_GIT_WRITE_TOKEN }}"
+  CLICOLOR_FORCE: '1'
+  GTEST_COLOR: 'yes'
+  CA_GIT_WRITE_TOKEN: "${{ secrets.CA_GIT_WRITE_TOKEN }}"
+  CA_GITLAB_API_TOKEN: "${{ secrets.CA_GITLAB_API_TOKEN }}"
+  LLVM_GIT_WRITE_TOKEN: zrHPYsf6BVupQeYySmnH
+jobs:
+  check-commit:
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == 'merge_request_event' || ${{ github.ref }} == $CI_DEFAULT_BRANCH
+    timeout-minutes: 240
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      LLVM_REPO:
+        value: git@git.office.codeplay.com:ComputeAorta/llvm-project.git
+        description: Location to checkout LLVM from.
+      LLVM_BRANCH:
+        value: main
+        description: Git branch to check out.
+      SHAREDSTORAGE_NAME:
+        value: main
+        description: Name to save in shared storage as; use this for downstream jobs.
+      DRY_RUN:
+        value: 'TRUE'
+        description: Don't push any artifacts, just attempt to build and verify the build was successful.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      PUSH_TAG:
+        value: 'FALSE'
+        description: After building the artifact, create and push a git tag to ComputeAorta/llvm-project.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_RISCV:
+        value: 'TRUE'
+        description: Build for Linux RISC-V.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_ARM:
+        value: 'TRUE'
+        description: Build for Linux ARM.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_WINDOWS_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+        lfs: true
+    - run: remote=$(git ls-remote --exit-code -h $LLVM_REPO $LLVM_BRANCH) || exit $?
+    - run: set -- $remote
+    - run: echo "PASS_HASH=$1" >> build.env
+#     # 'artifacts.dotenv' was not transformed because there is no suitable equivalent in GitHub Actions
+  ubuntu20_x86:
+    needs: check-commit
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == 'merge_request_event' || ${{ github.ref }} == $CI_DEFAULT_BRANCH || $BUILD_LINUX_X86 == "TRUE"
+    timeout-minutes: 240
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      LLVM_REPO:
+        value: git@git.office.codeplay.com:ComputeAorta/llvm-project.git
+        description: Location to checkout LLVM from.
+      LLVM_BRANCH:
+        value: main
+        description: Git branch to check out.
+      SHAREDSTORAGE_NAME:
+        value: main
+        description: Name to save in shared storage as; use this for downstream jobs.
+      DRY_RUN:
+        value: 'TRUE'
+        description: Don't push any artifacts, just attempt to build and verify the build was successful.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      PUSH_TAG:
+        value: 'FALSE'
+        description: After building the artifact, create and push a git tag to ComputeAorta/llvm-project.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_RISCV:
+        value: 'TRUE'
+        description: Build for Linux RISC-V.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_ARM:
+        value: 'TRUE'
+        description: Build for Linux ARM.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_WINDOWS_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        ARCH:
+        - x86
+        - x86_64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: env
+    - run: if [ "$DRY_RUN" == "FALSE" ]; then export _PUSH=--push; fi
+    - run: git clone --branch $LLVM_BRANCH $LLVM_REPO llvm-project
+    - run: git -C llvm-project reset --hard $PASS_HASH
+    - run: git -C llvm-project log -1
+    - run: ls -lah llvm-project
+    - run: python3 -u scripts/build.py --verbose --build_type ${{ matrix.BUILD_TYPE }} --arch ${{ matrix.ARCH }} --llvm_branch $LLVM_BRANCH --storage-name $SHAREDSTORAGE_NAME --generator Ninja -DLLVM_ENABLE_DIA_SDK=OFF --clean $_PUSH
+  ubuntu20_arm:
+    needs: check-commit
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == 'merge_request_event' || ${{ github.ref }} == $CI_DEFAULT_BRANCH || $BUILD_LINUX_ARM == "TRUE"
+    timeout-minutes: 240
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      LLVM_REPO:
+        value: git@git.office.codeplay.com:ComputeAorta/llvm-project.git
+        description: Location to checkout LLVM from.
+      LLVM_BRANCH:
+        value: main
+        description: Git branch to check out.
+      SHAREDSTORAGE_NAME:
+        value: main
+        description: Name to save in shared storage as; use this for downstream jobs.
+      DRY_RUN:
+        value: 'TRUE'
+        description: Don't push any artifacts, just attempt to build and verify the build was successful.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      PUSH_TAG:
+        value: 'FALSE'
+        description: After building the artifact, create and push a git tag to ComputeAorta/llvm-project.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_RISCV:
+        value: 'TRUE'
+        description: Build for Linux RISC-V.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_ARM:
+        value: 'TRUE'
+        description: Build for Linux ARM.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_WINDOWS_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        ARCH:
+        - arm
+        - arm64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: env
+    - run: if [ "$DRY_RUN" == "FALSE" ]; then export _PUSH=--push; fi
+    - run: git clone --branch $LLVM_BRANCH $LLVM_REPO llvm-project
+    - run: git -C llvm-project reset --hard $PASS_HASH
+    - run: git -C llvm-project log -1
+    - run: ls -lah llvm-project
+    - run: python3 -u scripts/build.py --verbose --build_type ${{ matrix.BUILD_TYPE }} --arch ${{ matrix.ARCH }} --llvm_branch $LLVM_BRANCH --storage-name $SHAREDSTORAGE_NAME --generator Ninja -DLLVM_ENABLE_DIA_SDK=OFF --clean $_PUSH
+  ubuntu20_riscv:
+    needs: check-commit
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == 'merge_request_event' || ${{ github.ref }} == $CI_DEFAULT_BRANCH || $BUILD_LINUX_RISCV == "TRUE"
+    timeout-minutes: 240
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      LLVM_REPO:
+        value: git@git.office.codeplay.com:ComputeAorta/llvm-project.git
+        description: Location to checkout LLVM from.
+      LLVM_BRANCH:
+        value: main
+        description: Git branch to check out.
+      SHAREDSTORAGE_NAME:
+        value: main
+        description: Name to save in shared storage as; use this for downstream jobs.
+      DRY_RUN:
+        value: 'TRUE'
+        description: Don't push any artifacts, just attempt to build and verify the build was successful.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      PUSH_TAG:
+        value: 'FALSE'
+        description: After building the artifact, create and push a git tag to ComputeAorta/llvm-project.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_RISCV:
+        value: 'TRUE'
+        description: Build for Linux RISC-V.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_ARM:
+        value: 'TRUE'
+        description: Build for Linux ARM.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_WINDOWS_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        ARCH:
+        - riscv64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: env
+    - run: if [ "$DRY_RUN" == "FALSE" ]; then export _PUSH=--push; fi
+    - run: git clone --branch $LLVM_BRANCH $LLVM_REPO llvm-project
+    - run: git -C llvm-project reset --hard $PASS_HASH
+    - run: git -C llvm-project log -1
+    - run: ls -lah llvm-project
+    - run: python3 -u scripts/build.py --verbose --build_type ${{ matrix.BUILD_TYPE }} --arch ${{ matrix.ARCH }} --llvm_branch $LLVM_BRANCH --storage-name $SHAREDSTORAGE_NAME --generator Ninja -DLLVM_ENABLE_DIA_SDK=OFF --clean $_PUSH
+  windows:
+    needs: check-commit
+    runs-on: windows-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/windows:10"
+    if: ${{ github.event_name }} == 'merge_request_event' || ${{ github.ref }} == $CI_DEFAULT_BRANCH || $BUILD_WINDOWS_X86 == "TRUE"
+    timeout-minutes: 240
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      LLVM_REPO:
+        value: git@git.office.codeplay.com:ComputeAorta/llvm-project.git
+        description: Location to checkout LLVM from.
+      LLVM_BRANCH:
+        value: main
+        description: Git branch to check out.
+      SHAREDSTORAGE_NAME:
+        value: main
+        description: Name to save in shared storage as; use this for downstream jobs.
+      DRY_RUN:
+        value: 'TRUE'
+        description: Don't push any artifacts, just attempt to build and verify the build was successful.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      PUSH_TAG:
+        value: 'FALSE'
+        description: After building the artifact, create and push a git tag to ComputeAorta/llvm-project.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_RISCV:
+        value: 'TRUE'
+        description: Build for Linux RISC-V.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_ARM:
+        value: 'TRUE'
+        description: Build for Linux ARM.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_WINDOWS_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+    strategy:
+      matrix:
+        BUILD_TYPE:
+        - Release
+        - ReleaseAssert
+        ARCH:
+        - x86_64
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: 'gci env:'
+    - run: if ( $DRY_RUN -eq "FALSE" ) { $_PUSH="--push" }
+    - run: git clone --branch $LLVM_BRANCH $LLVM_REPO llvm-project
+    - run: git -C llvm-project reset --hard $PASS_HASH
+    - run: git -C llvm-project log -1
+    - run: python -u scripts/build.py --verbose --build_type ${{ matrix.BUILD_TYPE }} --arch ${{ matrix.ARCH }} --llvm_branch $LLVM_BRANCH --storage-name $SHAREDSTORAGE_NAME --generator Ninja -DLLVM_ENABLE_DIA_SDK=OFF --clean $_PUSH
+  tag-commit:
+    needs:
+    - ubuntu20_x86
+    - ubuntu20_arm
+    - ubuntu20_riscv
+    - windows
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == 'merge_request_event' || ${{ github.ref }} == $CI_DEFAULT_BRANCH || $PUSH_TAG == "TRUE"
+    timeout-minutes: 240
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      LLVM_REPO:
+        value: git@git.office.codeplay.com:ComputeAorta/llvm-project.git
+        description: Location to checkout LLVM from.
+      LLVM_BRANCH:
+        value: main
+        description: Git branch to check out.
+      SHAREDSTORAGE_NAME:
+        value: main
+        description: Name to save in shared storage as; use this for downstream jobs.
+      DRY_RUN:
+        value: 'TRUE'
+        description: Don't push any artifacts, just attempt to build and verify the build was successful.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      PUSH_TAG:
+        value: 'FALSE'
+        description: After building the artifact, create and push a git tag to ComputeAorta/llvm-project.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_RISCV:
+        value: 'TRUE'
+        description: Build for Linux RISC-V.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_ARM:
+        value: 'TRUE'
+        description: Build for Linux ARM.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_WINDOWS_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: git clone --branch $LLVM_BRANCH https://oauth2:$LLVM_GIT_WRITE_TOKEN@git.office.codeplay.com/ComputeAorta/llvm-project.git llvm-project
+    - run: git -C llvm-project checkout $PASS_HASH
+    - run: git -C llvm-project config user.name "Gitlab CI"
+    - run: git -C llvm-project config user.email "nosuchemail@codeplay.invalid"
+    - run: 'git -C llvm-project tag -f -a build_$SHAREDSTORAGE_NAME -m "Automatic tag for llvm-ca Gitlab CI build #$CI_BUILD_ID."'
+    - run: git -C llvm-project push -f origin build_$SHAREDSTORAGE_NAME
+  notify-zulip-fail:
+    needs: tag-commit
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: failure()
+    timeout-minutes: 240
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      LLVM_REPO:
+        value: git@git.office.codeplay.com:ComputeAorta/llvm-project.git
+        description: Location to checkout LLVM from.
+      LLVM_BRANCH:
+        value: main
+        description: Git branch to check out.
+      SHAREDSTORAGE_NAME:
+        value: main
+        description: Name to save in shared storage as; use this for downstream jobs.
+      DRY_RUN:
+        value: 'TRUE'
+        description: Don't push any artifacts, just attempt to build and verify the build was successful.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      PUSH_TAG:
+        value: 'FALSE'
+        description: After building the artifact, create and push a git tag to ComputeAorta/llvm-project.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_RISCV:
+        value: 'TRUE'
+        description: Build for Linux RISC-V.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_ARM:
+        value: 'TRUE'
+        description: Build for Linux ARM.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_WINDOWS_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      ZULIP_PIPELINE_NAME: CA-LLVM
+      ZULIP_STREAM: Orion
+      ZULIP_TOPIC: GitLab CI
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: PIPELINE_TOOK=$( printf '"%s"' $CI_PIPELINE_CREATED_AT | jq -r 'now - (sub("\\.\\d+Z$"; "Z") | fromdate) | gmtime | .[2:6] | @text "\(.[0] -1) days \(.[1]) hours \(.[2]) mins"' )
+    - run: if [[ ! $PASS_HASH ]]; then export PASS_HASH="(unavailable)"; fi
+    - run: 'curl -X POST https://chat.codeplay.com/api/v1/messages -u "computeaorta-gitlab-bot@chat.codeplay.com:$ZULIP_TOKEN" --data-urlencode type=stream --data-urlencode to="$ZULIP_STREAM" --data-urlencode subject="$ZULIP_TOPIC" --data-urlencode "content=:red: The [$ZULIP_PIPELINE_NAME](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) pipeline for ${{ github.event.repository.full_name }} (\`$LLVM_BRANCH\` -> \`$SHAREDSTORAGE_NAME\`) FAILED (took $PIPELINE_TOOK). Attempted to build \`$SHAREDSTORAGE_NAME\` LLVM for commit \`$PASS_HASH\`."'
+  notify-zulip-success:
+    needs: tag-commit
+    runs-on: ubuntu-latest
+    container:
+      image: "$CI_REGISTRY/computeaorta/ci/ubuntu:20.04"
+    if: ${{ github.event_name }} == 'merge_request_event' || ${{ github.ref }} == $CI_DEFAULT_BRANCH || $DRY_RUN == "FALSE"
+    timeout-minutes: 240
+    env:
+      GIT_STRATEGY: clone
+      GIT_DEPTH: '3'
+      LLVM_REPO:
+        value: git@git.office.codeplay.com:ComputeAorta/llvm-project.git
+        description: Location to checkout LLVM from.
+      LLVM_BRANCH:
+        value: main
+        description: Git branch to check out.
+      SHAREDSTORAGE_NAME:
+        value: main
+        description: Name to save in shared storage as; use this for downstream jobs.
+      DRY_RUN:
+        value: 'TRUE'
+        description: Don't push any artifacts, just attempt to build and verify the build was successful.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      PUSH_TAG:
+        value: 'FALSE'
+        description: After building the artifact, create and push a git tag to ComputeAorta/llvm-project.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_RISCV:
+        value: 'TRUE'
+        description: Build for Linux RISC-V.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_ARM:
+        value: 'TRUE'
+        description: Build for Linux ARM.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_LINUX_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      BUILD_WINDOWS_X86:
+        value: 'TRUE'
+        description: Build for Linux x86/64.
+        options:
+        - 'TRUE'
+        - 'FALSE'
+      ZULIP_PIPELINE_NAME: CA-LLVM
+      ZULIP_STREAM: Orion
+      ZULIP_TOPIC: GitLab CI
+    steps:
+    - uses: actions/checkout@v4.1.0
+      with:
+        fetch-depth: '3'
+        lfs: true
+    - uses: actions/download-artifact@v4.1.0
+    - run: PIPELINE_TOOK=$( printf '"%s"' $CI_PIPELINE_CREATED_AT | jq -r 'now - (sub("\\.\\d+Z$"; "Z") | fromdate) | gmtime | .[2:6] | @text "\(.[0] -1) days \(.[1]) hours \(.[2]) mins"' )
+    - run: 'curl -X POST https://chat.codeplay.com/api/v1/messages -u "computeaorta-gitlab-bot@chat.codeplay.com:$ZULIP_TOKEN" --data-urlencode type=stream --data-urlencode to="$ZULIP_STREAM" --data-urlencode subject="$ZULIP_TOPIC" --data-urlencode "content=:green: The [$ZULIP_PIPELINE_NAME](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) pipeline for ${{ github.event.repository.full_name }} (\`$LLVM_BRANCH\` -> \`$SHAREDSTORAGE_NAME\`) succeeded (took $PIPELINE_TOOK). The new commit hash for the tag \`$SHAREDSTORAGE_NAME\` is now \`$PASS_HASH\`."'
