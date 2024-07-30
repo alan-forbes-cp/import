@@ -3,13 +3,13 @@
 # TO DO:
 # * remove --no-ssl-verify
 # * add options to run certain passes only
-# * put dry-run & migration in a multiple 'SRC_PROJ/TGT_PROJ'-list loop?
+# * put dry-run & migration in a multiple 'SRC_REPO/TGT_REPO'-list loop?
 #
 # GITLAB (source) side settings:
 SRC_NAMESPACE_OR_GROUP=ComputeAorta
-SRC_PROJ=ca-llvm
+SRC_REPO=ca-llvm
 # GITHUB (target) side settings:
-TGT_PROJ=https://github.com/alan-forbes-cp/import_target
+TGT_REPO=https://github.com/alan-forbes-cp/import_target
 # SET-UP
 mkdir -p $SRC_NAMESPACE_OR_GROUP
 # 1. AUDIT
@@ -24,21 +24,21 @@ echo ===================================================================
 gh actions-importer forecast gitlab --output-dir $SRC_NAMESPACE_OR_GROUP/forecast --namespace $SRC_NAMESPACE_OR_GROUP --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/forecast_command.out
 # 3. DRY_RUN
 echo ===================================================================
-echo DRY_RUN - $SRC_NAMESPACE_OR_GROUP/$SRC_PROJ
+echo DRY_RUN - $SRC_NAMESPACE_OR_GROUP/$SRC_REPO
 echo ===================================================================
-gh actions-importer dry-run gitlab --output-dir $SRC_NAMESPACE_OR_GROUP/dry-run --namespace $SRC_NAMESPACE_OR_GROUP --project $SRC_PROJ --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/dry-run_command.out
+gh actions-importer dry-run gitlab --output-dir $SRC_NAMESPACE_OR_GROUP/dry-run --namespace $SRC_NAMESPACE_OR_GROUP --project $SRC_REPO --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/dry-run_command.out
 # 4. MIGRATE
 echo ===================================================================
-echo MIGRATE - $SRC_NAMESPACE_OR_GROUP/$SRC_PROJ
+echo MIGRATE - $SRC_NAMESPACE_OR_GROUP/$SRC_REPO
 echo ===================================================================
-gh actions-importer migrate gitlab --target-url $TGT_PROJ --output-dir $SRC_NAMESPACE_OR_GROUP/migrate --namespace $SRC_NAMESPACE_OR_GROUP --project $SRC_PROJ --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/migrate_command.out
+gh actions-importer migrate gitlab --target-url $TGT_REPO --output-dir $SRC_NAMESPACE_OR_GROUP/migrate --namespace $SRC_NAMESPACE_OR_GROUP --project $SRC_REPO --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/migrate_command.out
 # LISTINGS
 echo ===================================================================
-echo AUDIT/FORECAST/DRY-RUN LISTINGS - $SRC_NAMESPACE_OR_GROUP/$SRC_PROJ
+echo AUDIT/FORECAST/DRY-RUN LISTINGS - $SRC_NAMESPACE_OR_GROUP/$SRC_REPO
 echo ===================================================================
 ls -l $SRC_NAMESPACE_OR_GROUP/audit/audit_summary.md
 ls -l $SRC_NAMESPACE_OR_GROUP/forecast/forecast_report.md
-ls -l $SRC_NAMESPACE_OR_GROUP/dry-run/$SRC_NAMESPACE_OR_GROUP/$SRC_PROJ/.github/workflows/*
+ls -l $SRC_NAMESPACE_OR_GROUP/dry-run/$SRC_NAMESPACE_OR_GROUP/$SRC_REPO/.github/workflows/*
 # FINAL MIGRATION PR
 echo -n "... also see MIGRATE "
 ls -t $SRC_NAMESPACE_OR_GROUP/migrate/log/*.log | head -1 | xargs grep "Pull request" | sed -n 's/.*INFO -- : //p'
