@@ -3,6 +3,7 @@
 # TO DO:
 # * remove --no-ssl-verify
 # * add options to run certain passes only
+# * add options for git settings
 # * put dry-run & migration in a multiple 'SRC_REPO/TGT_REPO'-list loop?
 #
 # GITLAB (source) side settings:
