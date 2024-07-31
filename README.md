@@ -15,7 +15,7 @@ The following tools should be installed:
 
 The following source-side and target-side Git personal access tokens (PAT) should also be generated prior to configuring the actions-importer:
 - Gitlab personal access token: with **read_api** scope only
-= Github personal access token (classic): with **workflow** scope only
+- Github personal access token (classic): with **workflow** scope only
 
 These should be generated and saved securely.
 
@@ -42,7 +42,7 @@ Note that the migrate function needs a non-empty repo on the Github (target) sid
 
 Run **import** with: "$ import"
 
-The **ComputeAorta** directory - and all its contents - represent output from an example **import** run using the following settings:
+The **ComputeAorta** directory in this repo - and all its contents - represent output from an example **import** run using the following settings:
 
 GITLAB (SOURCE) NAMESPACE / GROUP: **ComputeAorta**
 
@@ -50,7 +50,7 @@ GITLAB (SOURCE) REPO: **ca-llvm**
 
 GITHUB (TARGET) REPO: **alan-forbes-cp/import_target**
 
-These can be tailored in the script as required for individual circumstances.
+These can be tailored in the **import** script as required for individual circumstances.
 
 The **import** script uses the **gh** (Github CLI) command and its **actions-importer** extension. Output of the following 4 actions-importer functions used are shown in sub-directories under the **ComputeAorta** directory:
 1. audit (aka plan)
