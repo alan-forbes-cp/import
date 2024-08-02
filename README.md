@@ -83,6 +83,6 @@ In no particular order:
 - initial action runs of imported pipelines may reveal 'invalid workflow' errors which are not documented during import. For example, actions-importer may not handle **!reference** tags or pipeline pararmeter definition syntax. Your workflow may fail out-the-box as a result. Current thinking is that Github's 'customs tranformations' function may be useful to automatically convert the offending syntax in these situations. Alternatively, a local post-import processing tool could be used as an additional pass to tidy them up. That's all TBD. There is some speculation that these issues may be due to the actions-importer tool taking an old version of Gitlab pipelines as its reference version - but that's not confirmed.
 - check that your generated workflow action .yml file doesn't include any "not transformed" warnings as these will need manual intervention despite not being lised in your PRs "manual steps"  e.g.:
 
-    'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions
+    `'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions`
 
 - As should be clear from the above, the official "manual steps" may be only a starting point towards creating a functional Github workflow. 
