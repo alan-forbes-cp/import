@@ -11,35 +11,36 @@ SRC_NAMESPACE_OR_GROUP=ComputeAorta
 SRC_REPO=ca-llvm
 # GITHUB (target) side settings:
 TGT_REPO=https://github.com/alan-forbes-cp/import_target
+OUTPUT_DIR=${SRC_NAMESPACE_OR_GROUP}+${SRC_REPO}
 # SET-UP
-mkdir -p $SRC_NAMESPACE_OR_GROUP
+mkdir -p $OUTPUT_DIR
 # 1. AUDIT
 echo ===================================================================
 echo AUDIT - $SRC_NAMESPACE_OR_GROUP
 echo ===================================================================
-gh actions-importer audit gitlab --output-dir $SRC_NAMESPACE_OR_GROUP/audit --namespace $SRC_NAMESPACE_OR_GROUP --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/audit_command.out
+gh actions-importer audit gitlab --output-dir $OUTPUT_DIR/audit --namespace $SRC_NAMESPACE_OR_GROUP --no-ssl-verify | tee $OUTPUT_DIR/audit_command.out
 # 2. FORECAST
 echo ===================================================================
 echo FORECAST - $SRC_NAMESPACE_OR_GROUP
 echo ===================================================================
-gh actions-importer forecast gitlab --output-dir $SRC_NAMESPACE_OR_GROUP/forecast --namespace $SRC_NAMESPACE_OR_GROUP --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/forecast_command.out
+gh actions-importer forecast gitlab --output-dir $OUTPUT_DIR/forecast --namespace $SRC_NAMESPACE_OR_GROUP --no-ssl-verify | tee $OUTPUT_DIR/forecast_command.out
 # 3. DRY_RUN
 echo ===================================================================
 echo DRY_RUN - $SRC_NAMESPACE_OR_GROUP/$SRC_REPO
 echo ===================================================================
-gh actions-importer dry-run gitlab --output-dir $SRC_NAMESPACE_OR_GROUP/dry-run --namespace $SRC_NAMESPACE_OR_GROUP --project $SRC_REPO --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/dry-run_command.out
+gh actions-importer dry-run gitlab --output-dir $OUTPUT_DIR/dry-run --namespace $SRC_NAMESPACE_OR_GROUP --project $SRC_REPO --no-ssl-verify | tee $OUTPUT_DIR/dry-run_command.out
 # 4. MIGRATE
 echo ===================================================================
 echo MIGRATE - $SRC_NAMESPACE_OR_GROUP/$SRC_REPO
 echo ===================================================================
-gh actions-importer migrate gitlab --target-url $TGT_REPO --output-dir $SRC_NAMESPACE_OR_GROUP/migrate --namespace $SRC_NAMESPACE_OR_GROUP --project $SRC_REPO --no-ssl-verify | tee $SRC_NAMESPACE_OR_GROUP/migrate_command.out
+gh actions-importer migrate gitlab --target-url $TGT_REPO --output-dir $OUTPUT_DIR/migrate --namespace $SRC_NAMESPACE_OR_GROUP --project $SRC_REPO --no-ssl-verify | tee $OUTPUT_DIR/migrate_command.out
 # LISTINGS
 echo ===================================================================
 echo AUDIT/FORECAST/DRY-RUN LISTINGS - $SRC_NAMESPACE_OR_GROUP/$SRC_REPO
 echo ===================================================================
-ls -l $SRC_NAMESPACE_OR_GROUP/audit/audit_summary.md
-ls -l $SRC_NAMESPACE_OR_GROUP/forecast/forecast_report.md
-ls -l $SRC_NAMESPACE_OR_GROUP/dry-run/$SRC_NAMESPACE_OR_GROUP/$SRC_REPO/.github/workflows/*
+ls -l $OUTPUT_DIR/audit/audit_summary.md
+ls -l $OUTPUT_DIR/forecast/forecast_report.md
+ls -l $OUTPUT_DIR/dry-run/$SRC_NAMESPACE_OR_GROUP/$SRC_REPO/.github/workflows/*
 # FINAL MIGRATION PR
 echo -n "... also see MIGRATE "
-ls -t $SRC_NAMESPACE_OR_GROUP/migrate/log/*.log | head -1 | xargs grep "Pull request" | sed -n 's/.*INFO -- : //p'
+ls -t $OUTPUT_DIR/migrate/log/*.log | head -1 | xargs grep "Pull request" | sed -n 's/.*INFO -- : //p'

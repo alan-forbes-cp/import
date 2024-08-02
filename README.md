@@ -75,3 +75,14 @@ Browsing each of the sub-directories under **ComputeAorta** should provide a fla
 The final migrate phase results in a PR being created in the target Github repo. For the **import** run used to populate the **ComputeAorta** sub-directories, the corresponding [PR can be found here](https://github.com/alan-forbes-cp/import_target/pull/1). Note that the file proposed for merging is the same .yml file as in the above-mentioned dry-run phase.
 
 There is a useful workflow overview here: https://www.youtube.com/watch?v=3t5ywu0_qk4
+
+## "import" script: actions-importer gotchas and known import limitations @ version: 1.3.22081
+
+In no particular order:
+- actions-importer can get confused by very complex Gitlab CI pipeline definitions - particularly those that use levels of nested incuded files. Check that all pipeline jobs have been imported successfully - even for apparently "passing" import runs. Worst case you may have to refactor/simplify your source pipeline and re-import.
+- initial action runs of imported pipelines may reveal 'invalid workflow' errors which are not documented during import. For example, actions-importer may not handle **!reference** tags or pipeline pararmeter definition syntax. Your workflow may fail out-the-box as a result. Current thinking is that Github's 'customs tranformations' function may be useful to automatically convert the offending syntax in these situations. Alternatively, a local post-import processing tool could be used as an additional pass to tidy them up. That's all TBD. There is some speculation that these issues may be due to the actions-importer tool taking an old version of Gitlab pipelines as its reference version - but that's not confirmed.
+- check that your generated workflow action .yml file doesn't include any "not transformed" warnings as these will need manual intervention despite not being lised in your PRs "manual steps"  e.g.:
+
+    `'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions`
+
+- As should be clear from the above, the official "manual steps" may be only a starting point towards creating a functional Github workflow. 
