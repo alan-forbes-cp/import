@@ -1,21 +1,21 @@
 # README: "import" script
 
-This repo contains the latest version of the local Gitlab->Github Action Import bash script: **import**. The following sections contain details of configuration and example usage.
+This repo contains the latest version of the local Gitlab->Github Action Import bash script: **import**. The script is a wrapper around the Github **gh** actions-importer extension. The following sections contain details of configuration, example usage and "gotchas".
 
 ## Environment set-up and configuration
 
 ### Environment
 
-Any linux-flavour host with access to Gitlab and Github and running docker is suitable as an "import server"
+Any linux-flavour host i. with access to Gitlab and Github and ii. running docker is suitable as an "import server".
 
 The following tools should be installed:
-- **docker**: (see relevant docs for this install)
+- **docker**: (see relevant docs for this install).
 - **gh** (Github command-line tool): e.g. for ubuntu: "$ apt install gh"
 - **gh actions-importer** extension:  "$ gh extension install github/gh-actions-importer"
 
 The following source-side and target-side Git personal access tokens (PAT) should also be generated prior to configuring the actions-importer:
-- Gitlab personal access token: with **read_api** scope only
-- Github personal access token (classic): with **workflow** scope only
+- Gitlab personal access token: with **read_api** scope only.
+- Github personal access token (classic): with **workflow** scope only.
 
 These should be generated and saved securely. (See below for usage.)
 
@@ -24,7 +24,7 @@ These should be generated and saved securely. (See below for usage.)
 The actions-importer should be pre-configured using the command: "$ gh actions-importer configure"
 
 You will be asked to enter configuration details for:
-- provider: gitlab
+- provider: **gitlab**
 - Github PAT: (as generated above)
 - Github URL: https://github.com
 - Gitlab PAT: (as generated above)
@@ -80,7 +80,7 @@ There is a useful workflow overview here: https://www.youtube.com/watch?v=3t5ywu
 
 In no particular order:
 - actions-importer can get confused by very complex Gitlab CI pipeline definitions - particularly those using multiple levels of nested included files. Check that **all** pipeline jobs have been imported successfully with no omissions - do not assume that a default import run "pass" implies a complete import of all jobs. Note: worst case you may have to refactor/simplify your source pipeline and re-import.
-- initial action runs of imported pipelines may reveal 'invalid workflow' errors which are not otherwise documented during import. For example, actions-importer may not handle i. **!reference** tags or ii. pipeline pararmeter definition syntax. Your workflow may fail out-the-box as a result. Note: current thinking is that Github's 'customs tranformations' function may be useful to automatically convert the offending syntax in these situations. Alternatively, a local post-import processing tool could be used as an additional pass to tidy them up. That's all TBD. There is also some speculation that these issues may in part be due to the actions-importer tool taking an old version of Gitlab pipelines as its reference version - however that's not confirmed.
+- initial action runs of imported pipelines may reveal 'invalid workflow' errors which are not otherwise documented during import. For example, actions-importer may not handle Gitlab's i. **!reference** tags or ii. pipeline parameter definition syntax. Your workflow may fail out-the-box as a result. Note: current thinking is that Github's 'customs tranformations' function may be useful to automatically convert the offending syntax in these situations. Alternatively, a local post-import processing tool could be used as an additional pass to tidy them up. That's all TBD. There is also some speculation that these issues may in part be due to the actions-importer tool taking an old version of Gitlab pipelines as its reference version - however that's not confirmed.
 - check that your generated workflow action .yml file doesn't include any "not transformed" warnings as these will need manual intervention despite not being lised in your PRs "manual steps"  e.g.:
 
     `'artifacts.junit' was not transformed because there is no suitable equivalent in GitHub Actions`
