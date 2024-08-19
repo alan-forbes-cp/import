@@ -1,6 +1,6 @@
 # README: "import" script
 
-This repo contains the latest version of the local Gitlab->Github Action Import bash script: **import**. The script is a wrapper around the Github **gh** actions-importer extension. The following sections contain details of configuration, example usage and "gotchas".
+This repo contains the latest version of the local Gitlab->Github Action Import bash script: **import**. The script is a wrapper around the Github **gh** actions-importer extension. (See: https://docs.github.com/en/actions/migrating-to-github-actions/using-github-actions-importer-to-automate-migrations/automating-migration-with-github-actions-importer). The following sections contain details of **import** configuration, example usage and "gotchas".
 
 ## Environment set-up and configuration
 
